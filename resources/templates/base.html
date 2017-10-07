@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to ads-txt-reporter</title>
+    <title>Ads.txt Reporter</title>
 
     <!-- styles -->
     {% style "/assets/bootstrap/css/bootstrap.min.css" %}
@@ -23,12 +23,12 @@
               &#9776;
           </button>
           <div class="collapse navbar-toggleable-xs" id="collapsing-navbar">
-              <a class="navbar-brand" href="{{servlet-context}}/">Ads.Txt Reporter</a>
+              <a class="navbar-brand" href="{{servlet-context}}/">Ads.txt Reporter</a>
               <ul class="nav navbar-nav pull-right">
                   <li class="nav-item">
-                      <a href="{{servlet-context}}/"
-                         class="nav-link{% ifequal page "home.html" %} active{%endifequal%}">
-                      Home
+                      <a href="{{servlet-context}}/domains"
+                         class="nav-link{% ifequal page "domains.html" %} active{%endifequal%}">
+                        Domains
                       </a>
                   </li>
                   <li class="nav-item">

@@ -63,18 +63,22 @@
   )
 
 
-(defn home-page [{:keys [flash]}]
+(defn domains-page [{:keys [flash]}]
   (println (select-keys flash [:name :errors :message]))
   (layout/render
-   "home.html"
+   "domains.html"
    (merge {:domains (db/get-domains)}
           (select-keys flash [:name :errors :message]))))
+
+(defn home-page []
+  (layout/render "home.html"))
 
 (defn about-page []
   (layout/render "about.html"))
 
 (defroutes home-routes
-  (GET "/" request (home-page request))
-  (POST "/" request (save-domain! request))
+  (GET "/" [] (home-page))
+  (GET "/domains" request (domains-page request))
+  (POST "/domains" request (save-domain! request))
   (GET "/about" [] (about-page)))
 

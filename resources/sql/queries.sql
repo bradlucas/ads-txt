@@ -9,6 +9,10 @@ VALUES(:name)
 -- SELECT * from domains ORDER BY name ASC;
 select d.id, d.name, count(r.domain_id) as count from domains d left join records r on d.id=r.domain_id group by d.id, d.name order by d.name ASC;
 
+-- :name get-domain-id :? :1
+-- :doc select id from domains where name
+select d.id from domains d where d.name = :name
+
 
 -- :name save-record! :! :n
 -- :doc saves a new record

@@ -36,6 +36,9 @@
                 {% if errors.message %}
                 <div class="alert alert-danger">{{errors.message|join}}</div>
                 {% endif %}
+                {% if message %}
+                <div class="alert alert-danger">{{message}}</div>
+                {% endif %}
                 <input type="submit" class="btn btn-primary" value="Add Domain" />
         </form>
     </div>

@@ -21,16 +21,20 @@
     (-> (response/found "/")
         (assoc :flash (assoc params :errors errors)))
     (do
-      (db/save-domain! 
-       (assoc params :timestamp (java.sql.Timestamp. (.getTime (java.util.Date.)))))
+      (try
+        (db/save-domain! (assoc params :timestamp (java.sql.Timestamp. (.getTime (java.util.Date.)))))
+        (catch java.lang.Exception e
+          ;; ignore duplicate entries
+          ))
       (response/found "/"))))
 
 
 (defn home-page [{:keys [flash]}]
+  (println (select-keys flash [:name :errors :message]))
   (layout/render
    "home.html"
    (merge {:domains (db/get-domains)}
-          (select-keys flash [:name :errors]))))
+          (select-keys flash [:name :errors :message]))))
 
 (defn about-page []
   (layout/render "about.html"))

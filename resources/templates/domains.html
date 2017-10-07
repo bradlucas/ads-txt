@@ -14,7 +14,7 @@
         <tr><th>Domain</th><th>Records</th></tr>
             {% for item in domains %}
             <tr>
-              <td>{{item.name}}</td><td>-</td>
+              <td>{{item.name}}</td><td><a href="{{servlet-context}}/records?id={{item.id}}">{{item.count}}</a></td>
             </tr>
             {% endfor %}
       </table>

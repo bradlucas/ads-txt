@@ -57,11 +57,43 @@
 
 
 (defn domains-page [{:keys [flash]}]
-  (println (select-keys flash [:name :errors :message]))
   (layout/render
    "domains.html"
    (merge {:domains (db/get-domains)}
           (select-keys flash [:name :errors :message]))))
+
+
+
+(defn save-record! [{:keys [params]}]
+  ;; (if-let [hostname (hostname (:name params))]
+  ;;   (let [params (assoc params :name hostname)]
+  ;;     (if-let [errors (validate-name params)]
+  ;;       (-> (response/found "/records")
+  ;;           (assoc :flash (assoc params :errors errors)))
+  ;;       (do
+  ;;         (try
+  ;;           (db/save-record! params)
+  ;;           (catch java.lang.Exception e
+  ;;             ;; ignore duplicate entries
+  ;;             ))
+  ;;         (response/found "/records"))
+  ;;       )
+  ;;     )
+  ;;   (response/found "/records")
+  ;;   )
+
+  (response/found "/records")
+  )
+
+
+(defn records-page [{:keys [params]}]
+  (layout/render
+   "records.html"
+   (merge {:records
+           (if-let [id (:id params)]
+             (db/get-records-for-domain {:id (Integer/parseInt id)})
+             (db/get-records))}
+          (select-keys params [:name :errors :message]))))
 
 (defn home-page []
   (layout/render "home.html"))
@@ -73,5 +105,7 @@
   (GET "/" [] (home-page))
   (GET "/domains" request (domains-page request))
   (POST "/domains" request (save-domain! request))
+  (GET "/records" request (records-page request))
+  (POST "/records" request (save-domain! request))
   (GET "/about" [] (about-page)))
 

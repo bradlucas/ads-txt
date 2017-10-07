@@ -101,11 +101,27 @@
 (defn about-page []
   (layout/render "about.html"))
 
+(defn test []
+  (try
+      (db/save-record! {:domain_id 7
+                 :exchange_domain "exchange-domain"
+                 :seller_account_id "seller-account-id"
+                 :account_type "account-type"
+                 :tag_id "tagid"
+                        :comment "this is a comment"})
+      (catch java.lang.Exception e
+        ;; ignore duiplicates
+        ))
+  (response/found "/domains"))
+
+
 (defroutes home-routes
   (GET "/" [] (home-page))
   (GET "/domains" request (domains-page request))
   (POST "/domains" request (save-domain! request))
   (GET "/records" request (records-page request))
   (POST "/records" request (save-domain! request))
-  (GET "/about" [] (about-page)))
+  (GET "/about" [] (about-page))
+  (GET "/test" [] (test))
+  )
 

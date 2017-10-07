@@ -44,7 +44,7 @@
             (assoc :flash (assoc params :errors errors)))
         (do
           (try
-            (db/save-domain! (assoc params :timestamp (java.sql.Timestamp. (.getTime (java.util.Date.)))))
+            (db/save-domain! params)
             (catch java.lang.Exception e
               ;; ignore duplicate entries
               ))

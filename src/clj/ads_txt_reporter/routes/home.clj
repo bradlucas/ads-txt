@@ -4,29 +4,63 @@
             [ads-txt-reporter.db.core :as db]
             [ring.util.http-response :as response]
             [clojure.java.io :as io]
-            [struct.core :as st]))
-
+            [struct.core :as st]
+            [clojurewerkz.urly.core :refer [url-like as-map]]))
 
 (def name-schema
   [[:name
     st/required
-    st/string]
-    ])
+    st/string
+    ]])
 
 (defn validate-name [params]
   (first (st/validate params name-schema)))
 
+
+;; ----------------------------------------------------------------------------------------------------
+;; These routines can and should be pulled out from ads-txt-crawler
+;; Added here for a first pass
+(defn strip-www
+  "Remove preceeding www. from url"
+  [domain]
+  (let [[a b] (clojure.string/split domain #"^www.")]
+    (if b
+      b
+      a)))
+
+(defn hostname
+  "Parse url into components and return hostname"
+  [url]
+  (:host (as-map (url-like url))))
+
+;; TODO ping or similar to validate hostname
+(defn valid-hostname [hostname]   ;; TODO 
+  )
+
+
+(defn clean-name [name]
+  (-> name
+      (clojure.string/lower-case)
+      (clojure.string/trim)
+      (hostname)
+      (strip-www)
+      ))
+
 (defn save-domain! [{:keys [params]}]
-  (if-let [errors (validate-name params)]
-    (-> (response/found "/")
-        (assoc :flash (assoc params :errors errors)))
-    (do
-      (try
-        (db/save-domain! (assoc params :timestamp (java.sql.Timestamp. (.getTime (java.util.Date.)))))
-        (catch java.lang.Exception e
-          ;; ignore duplicate entries
-          ))
-      (response/found "/"))))
+  ;; pre-process name value
+  (let [params (assoc params :name (clean-name (:name params)))]
+    (if-let [errors (validate-name params)]
+      (-> (response/found "/")
+          (assoc :flash (assoc params :errors errors)))
+      (do
+        (try
+          (db/save-domain! (assoc params :timestamp (java.sql.Timestamp. (.getTime (java.util.Date.)))))
+          (catch java.lang.Exception e
+            ;; ignore duplicate entries
+            ))
+        (response/found "/")))
+    )
+  )
 
 
 (defn home-page [{:keys [flash]}]

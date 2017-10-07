@@ -4,6 +4,7 @@
   :url "http://example.com/FIXME"
 
   :dependencies [[clj-time "0.14.0"]
+                 [clojurewerkz/urly "1.0.0"]
                  [compojure "1.6.0"]
                  [conman "0.6.8"]
                  [cprop "0.1.11"]

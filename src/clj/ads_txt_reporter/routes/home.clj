@@ -23,42 +23,35 @@
 (defn strip-www
   "Remove preceeding www. from url"
   [domain]
-  (let [[a b] (clojure.string/split domain #"^www.")]
-    (if b
-      b
-      a)))
+  (if domain
+    (let [[a b] (clojure.string/split domain #"^www.")]
+      (if b
+        b
+        a))))
 
 (defn hostname
   "Parse url into components and return hostname"
   [url]
-  (:host (as-map (url-like url))))
+  (if-let [hostname (:host (as-map (url-like url)))]
+    (strip-www hostname)))
 
-;; TODO ping or similar to validate hostname
-(defn valid-hostname [hostname]   ;; TODO 
-  )
-
-
-(defn clean-name [name]
-  (-> name
-      (clojure.string/lower-case)
-      (clojure.string/trim)
-      (hostname)
-      (strip-www)
-      ))
 
 (defn save-domain! [{:keys [params]}]
-  ;; pre-process name value
-  (let [params (assoc params :name (clean-name (:name params)))]
-    (if-let [errors (validate-name params)]
-      (-> (response/found "/")
-          (assoc :flash (assoc params :errors errors)))
-      (do
-        (try
-          (db/save-domain! (assoc params :timestamp (java.sql.Timestamp. (.getTime (java.util.Date.)))))
-          (catch java.lang.Exception e
-            ;; ignore duplicate entries
-            ))
-        (response/found "/")))
+  (if-let [hostname (hostname (:name params))]
+    (let [params (assoc params :name hostname)]
+      (if-let [errors (validate-name params)]
+        (-> (response/found "/domains")
+            (assoc :flash (assoc params :errors errors)))
+        (do
+          (try
+            (db/save-domain! (assoc params :timestamp (java.sql.Timestamp. (.getTime (java.util.Date.)))))
+            (catch java.lang.Exception e
+              ;; ignore duplicate entries
+              ))
+          (response/found "/domains"))
+        )
+      )
+    (response/found "/domains")
     )
   )
 

@@ -10,10 +10,12 @@
     {% style "/assets/font-awesome/css/font-awesome.min.css" %}
 
     {% style "/css/screen.css" %}
+    {% style "/css/navbar.css" %}
   </head>
   <body>
-      <!-- navbar -->
-      <nav class="navbar navbar-dark bg-primary" role="navigation">
+    <nav class="navbar navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="nav-header">
           <button class="navbar-toggler hidden-sm-up"
                   type="button"
                   data-toggle="collapse"
@@ -21,23 +23,25 @@
               &#9776;
           </button>
           <div class="collapse navbar-toggleable-xs" id="collapsing-navbar">
-              <a class="navbar-brand" href="{{servlet-context}}/">ads-txt-reporter</a>
-              <ul class="nav navbar-nav">
+              <a class="navbar-brand" href="{{servlet-context}}/">Ads.Txt Reporter</a>
+              <ul class="nav navbar-nav pull-right">
                   <li class="nav-item">
                       <a href="{{servlet-context}}/"
                          class="nav-link{% ifequal page "home.html" %} active{%endifequal%}">
-                      home
+                      Home
                       </a>
                   </li>
                   <li class="nav-item">
                       <a href="{{servlet-context}}/about"
                          class="nav-link{% ifequal page "about.html" %} active{%endifequal%}">
-                      about
+                      About
                       </a>
                   </li>
               </ul>
           </div>
-      </nav>
+        </div>
+      </div>
+    </nav>
 
     <div class="container">
       {% block content %}

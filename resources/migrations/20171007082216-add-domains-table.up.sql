@@ -1,0 +1,5 @@
+CREATE TABLE domains
+(id SERIAL PRIMARY KEY,
+ name VARCHAR(254),
+ timestamp TIMESTAMP WITH TIME ZONE);
+

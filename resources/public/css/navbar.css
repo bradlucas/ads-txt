@@ -1,0 +1,93 @@
+/* bootstrap overrides */
+
+.navbar-inverse {
+    background: #242438;
+    padding-top:5px;
+    padding-bottom:3px;
+}
+
+.navbar-inverse .navbar-inner {
+    -webkit-box-shadow: 0 0 0;
+    -moz-box-shadow: 0 0 0;
+    box-shadow: 0 0 0;
+    border-width:0;
+}
+
+.navbar-inverse .nav li.dropdown>.dropdown-toggle .caret {
+    border-top-color: #f0f0f0;
+    border-bottom-color: #f0f0f0;
+    border-width: 6px;
+    margin-top: 6px;
+}
+
+.navbar a:hover {
+    text-decoration:none;
+}
+
+.navbar-brand {
+    /* padding-left:0; */
+    /* padding-bottom:0; */
+    /* padding-top:9px; */
+    /* margin-right:0; */
+    /* margin-left:0; */
+    /* color: #f5f5f5; */
+    color: #e2e2e2;
+}
+.navbar .brand:hover {
+    text-decoration: none;
+    /*text-shadow: 0 1px 0 rgba(255,255,255,.1), 0 0 30px rgba(255,255,255,.4);*/
+}
+
+.navbar .btn {
+    background-color:#535368;
+    background-image:none;
+    border-color: transparent;
+    color: #e6e6e6;
+    text-shadow: 0 0 0;
+    box-shadow: 0 0 0;
+}
+
+.navbar .btn:hover {
+    color:#f2f2f2;
+    background-color:#313146;
+}
+
+.navbar-inverse .nav>li>a {
+    color:#e2e2e2;
+}
+
+.navbar-inverse .nav>li>a:hover,.navbar-inverse .nav>li>a:focus {
+    color:#efefef;
+    background:#353549;
+}
+
+.nav-pills .dropdown-menu {
+    margin-top:4px;    
+}
+
+@media (max-width: 979px) {
+    .navbar-inverse .nav-collapse .nav>li>a, .navbar-inverse .nav-collapse .dropdown-menu a {
+        color: #dddddd;
+    }
+}
+
+.navbar .input-append input[type=text] {
+    background-color:#313146;
+    border-color:transparent;
+    font-size:12px;
+    color:#eee;
+    border-radius:0;
+    box-shadow:0 0;
+}
+
+.navbar .input-append .btn {
+    border-radius:0;
+}
+
+.nav-tabs.nav-stacked>li>a {
+    border-width: 0;
+    border-bottom: 1px solid #eee;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}

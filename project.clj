@@ -3,7 +3,8 @@
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
 
-  :dependencies [[clj-time "0.14.0"]
+  :dependencies [[com.bradlucas/ads-txt-crawler "0.0.6"]
+                 [clj-time "0.14.0"]
                  [clojurewerkz/urly "1.0.0"]
                  [compojure "1.6.0"]
                  [conman "0.6.8"]

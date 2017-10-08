@@ -1,7 +1,7 @@
-(ns ads-txt-reporter.routes.home
-  (:require [ads-txt-reporter.layout :as layout]
+(ns ads-txt.routes.home
+  (:require [ads-txt.layout :as layout]
             [compojure.core :refer [defroutes GET POST]]
-            [ads-txt-reporter.db.core :as db]
+            [ads-txt.db.core :as db]
             [ring.util.http-response :as response]
             [clojure.java.io :as io]
             [struct.core :as st]

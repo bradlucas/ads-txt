@@ -1,7 +1,7 @@
-(ns ads-txt-reporter.test.handler
+(ns ads-txt.test.handler
   (:require [clojure.test :refer :all]
             [ring.mock.request :refer :all]
-            [ads-txt-reporter.handler :refer :all]))
+            [ads-txt.handler :refer :all]))
 
 (deftest test-app
   (testing "main route"

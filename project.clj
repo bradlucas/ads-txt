@@ -1,11 +1,11 @@
-(defproject ads-txt-reporter "0.1.0-SNAPSHOT"
+(defproject ads-txt "0.0.1"
 
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
 
-  :dependencies [[com.bradlucas/ads-txt-crawler "0.0.6"]
-                 [clj-time "0.14.0"]
+  :dependencies [[clj-time "0.14.0"]
                  [clojurewerkz/urly "1.0.0"]
+                 [com.bradlucas/ads-txt-crawler "0.0.6"]
                  [compojure "1.6.0"]
                  [conman "0.6.8"]
                  [cprop "0.1.11"]
@@ -39,7 +39,7 @@
   :test-paths ["test/clj"]
   :resource-paths ["resources"]
   :target-path "target/%s/"
-  :main ^:skip-aot ads-txt-reporter.core
+  :main ^:skip-aot ads-txt.core
   :migratus {:store :database :db ~(get (System/getenv) "DATABASE_URL")}
 
   :plugins [[lein-cprop "1.0.3"]
@@ -49,7 +49,7 @@
   :profiles
   {:uberjar {:omit-source true
              :aot :all
-             :uberjar-name "ads-txt-reporter.jar"
+             :uberjar-name "ads-txt.jar"
              :source-paths ["env/prod/clj"]
              :resource-paths ["env/prod/resources"]}
 

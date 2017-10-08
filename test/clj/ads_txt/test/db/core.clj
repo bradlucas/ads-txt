@@ -1,17 +1,17 @@
-(ns ads-txt-reporter.test.db.core
-  (:require [ads-txt-reporter.db.core :refer [*db*] :as db]
+(ns ads-txt.test.db.core
+  (:require [ads-txt.db.core :refer [*db*] :as db]
             [luminus-migrations.core :as migrations]
             [clojure.test :refer :all]
             [clojure.java.jdbc :as jdbc]
-            [ads-txt-reporter.config :refer [env]]
+            [ads-txt.config :refer [env]]
             [mount.core :as mount]))
 
 (use-fixtures
   :once
   (fn [f]
     (mount/start
-      #'ads-txt-reporter.config/env
-      #'ads-txt-reporter.db.core/*db*)
+      #'ads-txt.config/env
+      #'ads-txt.db.core/*db*)
     (migrations/migrate ["migrate"] (select-keys env [:database-url]))
     (f)))
 

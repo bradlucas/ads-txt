@@ -1,4 +1,4 @@
-(ns ads-txt-reporter.layout
+(ns ads-txt.layout
   (:require [selmer.parser :as parser]
             [selmer.filters :as filters]
             [markdown.core :refer [md-to-html-string]]

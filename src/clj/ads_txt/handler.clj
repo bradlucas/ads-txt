@@ -1,11 +1,11 @@
-(ns ads-txt-reporter.handler
+(ns ads-txt.handler
   (:require [compojure.core :refer [routes wrap-routes]]
-            [ads-txt-reporter.layout :refer [error-page]]
-            [ads-txt-reporter.routes.home :refer [home-routes]]
+            [ads-txt.layout :refer [error-page]]
+            [ads-txt.routes.home :refer [home-routes]]
             [compojure.route :as route]
-            [ads-txt-reporter.env :refer [defaults]]
+            [ads-txt.env :refer [defaults]]
             [mount.core :as mount]
-            [ads-txt-reporter.middleware :as middleware]))
+            [ads-txt.middleware :as middleware]))
 
 (mount/defstate init-app
                 :start ((or (:init defaults) identity))

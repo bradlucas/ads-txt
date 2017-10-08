@@ -2,9 +2,9 @@
 <configuration>
     <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>log/ads-txt-reporter.log</file>
+        <file>log/ads-txt.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>log/ads-txt-reporter.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>log/ads-txt.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>100MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>

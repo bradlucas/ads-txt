@@ -1,10 +1,10 @@
-(ns ads-txt-reporter.db.core
+(ns ads-txt.db.core
   (:require
     [cheshire.core :refer [generate-string parse-string]]
     [clj-time.jdbc]
     [clojure.java.jdbc :as jdbc]
     [conman.core :as conman]
-    [ads-txt-reporter.config :refer [env]]
+    [ads-txt.config :refer [env]]
     [mount.core :refer [defstate]])
   (:import org.postgresql.util.PGobject
            java.sql.Array

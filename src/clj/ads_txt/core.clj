@@ -1,9 +1,9 @@
-(ns ads-txt-reporter.core
-  (:require [ads-txt-reporter.handler :as handler]
+(ns ads-txt.core
+  (:require [ads-txt.handler :as handler]
             [luminus.repl-server :as repl]
             [luminus.http-server :as http]
             [luminus-migrations.core :as migrations]
-            [ads-txt-reporter.config :refer [env]]
+            [ads-txt.config :refer [env]]
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.tools.logging :as log]
             [mount.core :as mount])
@@ -50,12 +50,12 @@
   (cond
     (some #{"init"} args)
     (do
-      (mount/start #'ads-txt-reporter.config/env)
+      (mount/start #'ads-txt.config/env)
       (migrations/init (select-keys env [:database-url :init-script]))
       (System/exit 0))
     (some #{"migrate" "rollback"} args)
     (do
-      (mount/start #'ads-txt-reporter.config/env)
+      (mount/start #'ads-txt.config/env)
       (migrations/migrate args (select-keys env [:database-url]))
       (System/exit 0))
     :else

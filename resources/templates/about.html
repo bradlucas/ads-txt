@@ -7,13 +7,39 @@
       <h1>About</h1>
     </div>
   </div>
-  
+
+
   <div class="row">
-    <div class="col-4 mx-auto text-center">
-      <img src="{{servlet-context}}/img/warning_clojure.png"></img>
-    </div>
+    <p>This site allows you to submit domains for crawling of their <a target="_default" href="https://iabtechlab.com/ads-txt/">Ads.txt</a> files. When a valid Ads.txt file is present this system will parse it's contents and save the resulting records to it's database. If the system has valid records for a domain the the number of records will be displayed on the domains page and when clicked will show the associated records.</p>
   </div>
 
+  <div class="row">
+    <p>This project was developed by <a target="_default" href="http://bradlucas.com/index.html">Brad Lucas</a>. The first part of the system was developed as a library to crawl sites. It's source code is available in GitHub.
+      Also, <a target="_default" href="http://bradlucas.com/index.html">Brad</a> has a series of blog posts describing the development of this project. See the following links for the GitHub repository, blog posts and more information on the <a target="_default" href="https://iabtechlab.com/ads-txt/">Ads.txt specification</a>.
+    </p>
+  </div>
+  
+  <div class="row">
+    <h5>Links</h5>
+    <ul>
+      <li><a target="_default" href="https://github.com/bradlucas/ads-txt-crawler">https://github.com/bradlucas/ads-txt-crawler</a></li>
+      <li><a target="_default" href="http://blog.bradlucas.com/tags/ads.txt/">http://blog.bradlucas.com/tags/ads.txt/</a></li>
+      <li><a target="_default" href="https://iabtechlab.com/ads-txt/">IAB Tech Lab - Ads.txt Spec</a></li>
+      
+    </ul>
+  </div>  
+  
+  <div class="row">
+    <div class="col-12 text-center">
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-12 mx-auto text-center" style="text-align: center; margin-top: 40px;">
+      <a target="_default" href="http://clojure.org"><img src="{{servlet-context}}/img/warning_clojure.png"></img></a>
+    </div>
+  </div>
+  
 </div>
 
 {% endblock %}

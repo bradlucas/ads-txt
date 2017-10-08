@@ -54,6 +54,7 @@
       {% endblock %}
     </div>
 
+
     <!-- scripts -->
     {% script "/assets/jquery/jquery.min.js" %}
     {% script "/assets/tether/dist/js/tether.min.js" %}
@@ -62,13 +63,7 @@
     <!-- http://jsfiddle.net/e3nk137y/1434/ -->
     {% style "https://rawgit.com/wenzhixin/bootstrap-table/master/src/bootstrap-table.css" %}
     {% script "https://rawgit.com/wenzhixin/bootstrap-table/master/src/bootstrap-table.js" %}
-    <script type="text/javascript">
-      function recordsSorter(a, b) {
-    if (a.month < b.month) return -1;
-    if (a.month > b.month) return 1;
-    return 0;
-        }
-        </script>
+
     <script type="text/javascript">
       var context = "{{servlet-context}}";
     </script>

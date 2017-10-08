@@ -12,12 +12,14 @@
     <div class="col-md-12">
       <table class="table table-striped table-bordered" data-toggle="table">
         <thead>
-          <tr><th data-field="domain" data-sortable="true">Domain</th><th data-field="records" data-sortable="true">Records</th></tr>
+          <tr><th data-field="domain" data-sortable="true">Domain</th><th data-field="records" data-sortable="true">Record Count</th><th>View</th></tr>
         </thead>
         <tbody>
             {% for item in domains %}
             <tr>
-              <td>{{item.name}}</td><td><a href="{{servlet-context}}/records?id={{item.id}}">{{item.count}}</a></td>
+              <td>{{item.name}}</td>
+              <td>{{item.count}}</td>
+              <td><a href="{{servlet-context}}/records?id={{item.id}}">-></a></td>
             </tr>
             {% endfor %}
         </tbody>
@@ -25,6 +27,7 @@
     </div>
   </div>
 
+      
   <div class="row" style="padding-top: 20px;">
     <div class="col-md-12">
         <form method="POST" action="/domains">

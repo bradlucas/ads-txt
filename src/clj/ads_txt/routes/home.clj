@@ -4,6 +4,7 @@
             [ads-txt.db.core :as db]
             [ring.util.http-response :as response]
             [clojure.java.io :as io]
+            [clojure.data.csv :as csv]
             [struct.core :as st]
             [clojurewerkz.urly.core :refer [url-like as-map]]
             [ads-txt-crawler.process :as p]
@@ -61,20 +62,71 @@
     ;; show domains page
   (response/found "/domains"))
 
-(defn domains-page [{:keys [flash]}]
-  (layout/render
-   "domains.html"
-   (merge {:domains (db/get-domains)}
-          (select-keys flash [:name :errors :message]))))
+(defn domain-data-csv [report]
+  (let [header ["name", "count"]
+        data (map 
+              (fn [line] 
+                (vec (map 
+                      (fn [item] (get line (keyword item))) header)
+                     ))
+              report)]
+    (with-out-str (csv/write-csv *out* data))))
+
+(defn download-domains-list-csv []
+  (let [data (db/get-domains)]
+    {:status 200
+     :headers {"Content-Type" "text/csv; charset=utf-8"
+               "Content-Length"      (str (count data))
+               "Cache-Control"       "no-cache"
+               "Content-Disposition" (str "attachment; filename=ads-txt-domains.csv")}
+     :body (domain-data-csv data)}
+    ))
+
+(defn domains-page [{:keys [params]}]
+  (if (:csv params)
+    (download-domains-list-csv)
+    (layout/render
+     "domains.html"
+     (merge {:domains (db/get-domains)}
+            (select-keys params [:name :errors :message])))))
+
+(defn records-data-csv [report]
+  (let [header ["name", "exchange_domain", "seller_account_id", "account_type", "tag_id", "comment"]
+        data (map 
+              (fn [line] 
+                (vec (map 
+                      (fn [item] (get line (keyword item))) header)
+                     ))
+              report)]
+    (with-out-str (csv/write-csv *out* data)))
+  )
+
+
+(defn download-records-list-csv [params]
+  (let [data (if-let [id (:id params)]
+               (db/get-records-for-domain {:id (Integer/parseInt id)})
+               (db/get-records))
+        ]
+    {:status 200
+     :headers {"Content-Type" "text/csv; charset=utf-8"
+               "Content-Length"      (str (count data))
+               "Cache-Control"       "no-cache"
+               "Content-Disposition" (str "attachment; filename=ads-txt-records.csv")}
+     :body (records-data-csv data)}
+    )
+)
 
 (defn records-page [{:keys [params]}]
-  (layout/render
-   "records.html"
-   (merge {:records
-           (if-let [id (:id params)]
-             (db/get-records-for-domain {:id (Integer/parseInt id)})
-             (db/get-records))}
-          (select-keys params [:name :errors :message]))))
+  (if (:csv params)
+    (download-records-list-csv params)
+    (layout/render
+     "records.html"
+     (merge {:records
+             (if-let [id (:id params)]
+               (db/get-records-for-domain {:id (Integer/parseInt id)})
+               (db/get-records))
+             :id (:id params)}
+            (select-keys params [:name :errors :message])))))
 
 (defn home-page []
   (layout/render "home.html"))

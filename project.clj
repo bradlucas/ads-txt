@@ -1,7 +1,7 @@
 (defproject ads-txt "0.0.1"
 
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+  :description "A site which uses `ads-txt-crawler` to retrieve and store Ads.txt file contents"
+  :url "http://ads-txt.herokuapp.com/"
 
   :dependencies [[clj-time "0.14.0"]
                  [clojurewerkz/urly "1.0.0"]

@@ -6,12 +6,16 @@
             [ads-txt.config :refer [env]]
             [clojure.tools.cli :refer [parse-opts]]
             [clojure.tools.logging :as log]
-            [mount.core :as mount])
+            [mount.core :as mount]
+            [clojure.java.io :refer [reader]]
+            [ads-txt.routes.home :as h]
+            )
   (:gen-class))
 
 (def cli-options
   [["-p" "--port PORT" "Port number"
-    :parse-fn #(Integer/parseInt %)]])
+    :parse-fn #(Integer/parseInt %)]
+   ["-t" "--targets FILE" "List of domains to crawl ads.txt files from"]])
 
 (mount/defstate ^{:on-reload :noop}
                 http-server
@@ -46,7 +50,21 @@
     (log/info component "started"))
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 
-(defn -main [& args]
+
+(defn crawl-targets [targets-list]
+  (start-app nil)
+  (with-open [rdr (reader targets-list)]
+    (doseq [line (line-seq rdr)]
+      ;; (h/process-domain! {:params {:name (clojure.string/trim line)}})
+      ;;      {:params {:name "wordpress.com"}}
+      (let [p {:params {:name (clojure.string/trim line)}}]
+        (println (format "Crawling %s" (:name (:params p))))
+        (h/process-domain! p)
+        ))
+    )
+  (stop-app))
+
+(defn process-cmdline-args [args]
   (cond
     (some #{"init"} args)
     (do
@@ -61,3 +79,12 @@
     :else
     (start-app args))
   )
+
+(defn -main [& args]
+  ;; parse args
+  (let [opts (parse-opts args cli-options)]
+    (println (:options opts))
+    (println (:arguments opts))
+    (if-let [targets-list (:targets (:options opts))]
+      (crawl-targets targets-list)
+      (process-cmdline-args args))))

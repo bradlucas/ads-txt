@@ -14,13 +14,13 @@
         <li>
           <a href="{{servlet-context}}/domains"
              class="nav-link{% ifequal page "domains.html" %} active{%endifequal%}">
-            Domains
+            Domains ({{ domains-count.count }})
           </a>
         </li>
         <li>
           <a href="{{servlet-context}}/records"
              class="nav-link{% ifequal page "records.html" %} active{%endifequal%}">
-            Records
+            Records ({{ records-count.count }})
           </a>
         </li>
     </div>

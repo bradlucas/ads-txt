@@ -129,7 +129,10 @@
             (select-keys params [:name :errors :message])))))
 
 (defn home-page []
-  (layout/render "home.html"))
+  (layout/render
+   "home.html"
+   {:domains-count (db/get-domains-count)
+    :records-count (db/get-records-count)}))
 
 (defn about-page []
   (layout/render "about.html"))

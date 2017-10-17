@@ -30,3 +30,10 @@ select d.name, r.* from domains d, records r where d.id=r.domain_id order by d.n
 select d.name, r.* from domains d, records r where d.id=r.domain_id and d.id = :id order by d.name;
 
 
+-- :name get-domains-count :? :1
+-- :doc returns number of domains
+SELECT COUNT(*) FROM domains
+
+-- :name get-records-count :? :1
+-- :doc returns number of records
+SELECT COUNT(*) FROM records

@@ -37,3 +37,7 @@ SELECT COUNT(*) FROM domains
 -- :name get-records-count :? :1
 -- :doc returns number of records
 SELECT COUNT(*) FROM records
+
+-- :name get-domain-name :? :1
+-- :doc returns the domain name for it's id
+select d.name from domains d where d.id = :id

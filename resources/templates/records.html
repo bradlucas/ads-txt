@@ -25,7 +25,13 @@
         <tbody>
         {% for item in records %}
         <tr>
-          <td><a href="{{servlet-context}}/records?id={{item.domain_id}}">{{item.name}}</a></td><td>{{item.exchange_domain}}</td><td>{{item.seller_account_id}}</td><td>{{item.account_type}}</td><td>{{item.tag_id}}</td>
+          <td>
+            {% if domain-name %}
+            {{item.name}}
+            {% else %}
+            <a href="{{servlet-context}}/records?id={{item.domain_id}}">{{item.name}}</a>
+            {% endif %}
+            </td><td>{{item.exchange_domain}}</td><td>{{item.seller_account_id}}</td><td>{{item.account_type}}</td><td>{{item.tag_id}}</td>
         </tr>
         {% endfor %}
         </tbody>

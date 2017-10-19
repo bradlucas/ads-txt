@@ -74,8 +74,11 @@
     {% script "/assets/bootstrap/js/bootstrap.min.js" %}
 
     <!-- http://jsfiddle.net/e3nk137y/1434/ -->
-    {% style "https://rawgit.com/wenzhixin/bootstrap-table/master/src/bootstrap-table.css" %}
-    {% script "https://rawgit.com/wenzhixin/bootstrap-table/master/src/bootstrap-table.js" %}
+    <!-- "https://rawgit.com/wenzhixin/bootstrap-table/master/src/bootstrap-table.css" -->
+    {% style "/css/bootstrap-table.css" %}
+
+    <!-- "https://rawgit.com/wenzhixin/bootstrap-table/master/src/bootstrap-table.js" -->
+    {% script "/js/bootstrap-table.js" %}
 
     <script type="text/javascript">
       var context = "{{servlet-context}}";

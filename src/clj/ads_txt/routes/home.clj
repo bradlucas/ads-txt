@@ -125,11 +125,19 @@
              (if-let [id (:id params)]
                (db/get-records-for-domain {:id (Integer/parseInt id)})
                (db/get-records))
-             :id (:id params)}
+             :id (:id params)
+             :domain-name
+             (if-let [id (:id params)]
+               (db/get-domain-name {:id (Integer/parseInt id)})
+               )
+             }
             (select-keys params [:name :errors :message])))))
 
 (defn home-page []
-  (layout/render "home.html"))
+  (layout/render
+   "home.html"
+   {:domains-count (db/get-domains-count)
+    :records-count (db/get-records-count)}))
 
 (defn about-page []
   (layout/render "about.html"))

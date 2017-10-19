@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="google" content="notranslate" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8l en_US">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
     <title>Ads.txt</title>
 
     <!-- styles -->
@@ -11,8 +15,11 @@
 
     {% style "/css/screen.css" %}
     {% style "/css/navbar.css" %}
+    {% style "/css/sticky.css" %}
+    
   </head>
   <body>
+    <div id="wrap">
     <nav class="navbar navbar-inverse" role="navigation">
       <div class="container">
         <div class="nav-header">
@@ -54,6 +61,12 @@
       {% endblock %}
     </div>
 
+    </div>
+    <div id="footer">
+      <div class="container">
+        <p>Copyright 2017 <a target="_default" href="http://bradlucas.com">Brad Lucas</a></p>
+      </div>
+    </div>
 
     <!-- scripts -->
     {% script "/assets/jquery/jquery.min.js" %}
@@ -61,8 +74,11 @@
     {% script "/assets/bootstrap/js/bootstrap.min.js" %}
 
     <!-- http://jsfiddle.net/e3nk137y/1434/ -->
-    {% style "https://rawgit.com/wenzhixin/bootstrap-table/master/src/bootstrap-table.css" %}
-    {% script "https://rawgit.com/wenzhixin/bootstrap-table/master/src/bootstrap-table.js" %}
+    <!-- "https://rawgit.com/wenzhixin/bootstrap-table/master/src/bootstrap-table.css" -->
+    {% style "/css/bootstrap-table.css" %}
+
+    <!-- "https://rawgit.com/wenzhixin/bootstrap-table/master/src/bootstrap-table.js" -->
+    {% script "/js/bootstrap-table.js" %}
 
     <script type="text/javascript">
       var context = "{{servlet-context}}";

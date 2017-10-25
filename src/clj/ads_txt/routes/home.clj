@@ -123,7 +123,7 @@
      "records.html"
      (merge {:records
              (if-let [id (:id params)]
-               (db/get-records-for-domain {:id (Integer/parseInt id)})
+               (db/get-records-for-domain-id {:id (Integer/parseInt id)})
                (db/get-records))
              :id (:id params)
              :domain-name

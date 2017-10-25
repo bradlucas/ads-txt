@@ -6,6 +6,7 @@
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [ring.middleware.webjars :refer [wrap-webjars]]
             [muuntaja.core :as muuntaja]
+            [muuntaja.format.json :as json-format]
             [muuntaja.format.transit :as transit-format]
             [muuntaja.middleware :refer [wrap-format wrap-params]]
             [ads-txt.config :refer [env]]
@@ -54,18 +55,22 @@
     (fn [v] (-> ^ReadableInstant v .getMillis))
     (fn [v] (-> ^ReadableInstant v .getMillis .toString))))
 
+(cheshire.generate/add-encoder org.joda.time.DateTime
+  (fn [c jsonGenerator]
+    (.writeString jsonGenerator (-> ^ReadableInstant c .getMillis .toString))))
+
 (def restful-format-options
   (update
     muuntaja/default-options
     :formats
     merge
-    {"application/transit+json"
-     {:decoder [(partial transit-format/make-transit-decoder :json)]
-      :encoder [#(transit-format/make-transit-encoder
-                   :json
-                   (merge
-                     %
-                     {:handlers {org.joda.time.DateTime joda-time-writer}}))]}}))
+    {"application/json"  json-format/json-format
+     "application/transit+json" {:decoder [(partial transit-format/make-transit-decoder :json)]
+                                 :encoder [#(transit-format/make-transit-encoder
+                                             :json
+                                             (merge
+                                              %
+                                              {:handlers {org.joda.time.DateTime joda-time-writer}}))]}}))
 
 (defn wrap-formats [handler]
   (let [wrapped (-> handler wrap-params (wrap-format restful-format-options))]

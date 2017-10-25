@@ -2,6 +2,7 @@
   (:require [compojure.core :refer [routes wrap-routes]]
             [ads-txt.layout :refer [error-page]]
             [ads-txt.routes.home :refer [home-routes]]
+            [ads-txt.routes.api :refer [api-routes]]
             [compojure.route :as route]
             [ads-txt.env :refer [defaults]]
             [mount.core :as mount]
@@ -15,6 +16,8 @@
   (routes
     (-> #'home-routes
         (wrap-routes middleware/wrap-csrf)
+        (wrap-routes middleware/wrap-formats))
+    (-> #'api-routes
         (wrap-routes middleware/wrap-formats))
     (route/not-found
       (:body

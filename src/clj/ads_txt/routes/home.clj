@@ -7,8 +7,8 @@
             [clojure.data.csv :as csv]
             [struct.core :as st]
             [clojurewerkz.urly.core :refer [url-like as-map]]
-            [ads-txt-crawler.process :as p]
-            [ads-txt-crawler.domains :as d]))
+            [ads-txt-crawler.domains :as d]
+            [ads-txt-crawler.crawl :as c]))
 
 (def name-schema
   [[:name
@@ -41,7 +41,7 @@
 
 (defn crawl-domain-save [domain-name]
   (let [id (db/get-domain-id {:name domain-name})
-        data (p/process domain-name)]
+        data (:records (c/get-data domain-name))]
     (doseq [d data]
       (try
         (db/save-record! {:domain_id (:id id)

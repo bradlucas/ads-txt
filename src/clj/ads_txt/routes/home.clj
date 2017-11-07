@@ -162,33 +162,6 @@
 (defn about-page []
   (layout/render "about.html"))
 
-;; (defn test []
-;;   (try
-;;       (db/save-record! {:domain_id 7
-;;                         :exchange_domain "exchange-domain"
-;;                         :seller_account_id "seller-account-id"
-;;                         :account_type "account-type"
-;;                         :tag_id "tagid"
-;;                         :comment "this is a comment"})
-;;       (catch java.lang.Exception e
-;;         ;; ignore duplicates
-;;         ))
-;;   (response/found "/domains"))
-
-;; (defn test2 []
-;;   (let [domain "businessinsider.com"]
-;;     (save-domain! {:params {:name domain}})
-;;     (crawl-domain-save domain))
-;;   (response/found "/domains"))
-
-(defn test [{:keys [params]}]
-  (println params)
-  )
-
-
-
-
-
 (defroutes home-routes
   (GET "/" [] (home-page))
   (POST "/" request (check-domain! request))
@@ -203,8 +176,5 @@
 
   (GET "/test" request (test request))
   
-  (GET "/about" [] (about-page))
-  ;; (GET "/test" [] (test))
-  ;; (GET "/test2" [] (test2))
-  )
+  (GET "/about" [] (about-page)))
 

@@ -40,8 +40,10 @@
           hostname)))))
 
 (defn crawl-domain-save [domain-name]
+  (println "crawl-domain-save")
   (let [id (db/get-domain-id {:name domain-name})
-        data (:records (c/get-data domain-name))]
+        records (:records (c/get-data domain-name))
+        data (filter (fn [r] (and (not-empty (:account-id r)) (not-empty (:account-id r)))) records)]
     (doseq [d data]
       (try
         (db/save-record! {:domain_id (:id id)

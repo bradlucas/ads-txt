@@ -173,8 +173,6 @@
   (GET "/download/domains" request (download-domains-list-csv))
   (GET "/download/records" request (download-records-list-csv nil))
   (GET "/download/records/:id" [id] (download-records-list-csv id))
-
-  (GET "/test" request (test request))
   
   (GET "/about" [] (about-page)))
 

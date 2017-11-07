@@ -8,16 +8,10 @@
   </div>
 
     <div class="row">
-    <div class="col-md-12">
-
-      <p>This site lets you check a domain for a valid Ads.txt file. When submitted, a domain is crawled for it's Ads.txt file and if found the file's content present after parsing. The site also stores the domain and will crawl for updates periodically.</p>
-
-      <p>This site is for demonstration purposes and should be considered a proof of concept. Additionally, the data may at anytime be removed during upgrades or as the site evolves. For more details about this site's development visit the <a href="{{servlet-context}}/about">about</a> page. Suggestions are certainly welcome.
-        </p>
+      <div class="col-md-12">
+        <p>This site lets you check a domain for a valid Ads.txt file. When submitted, a domain is crawled for it's Ads.txt file and if found the file's content present after parsing.</p>
     </div>
   </div>
-
-
 
   <div class="row spacer">
     <div class="col-md-12">
@@ -43,16 +37,12 @@
     </div>
   </div>
 
-
-  <!-- TODO: If records -->
-  
   <div class="row spacer">
     <div class="col-md-12">
       <div class="pull-left">Domain: {{domain-name}}</div>
       <div class="pull-right">Count: {{records|count}}</div>
     </div>
   </div>
-  
 
   <div class="row">
     <div class="col-md-12">
@@ -85,27 +75,24 @@
       {% endif %}
     </div>
   </div>
-
-
   
-    <div class="row spacer">
+  <div class="row spacer">
     <div class="col-md-12">
       <h4>Data Downloads</h4>
-      
       <ul>
-        <li>
-          <a href="{{servlet-context}}/download/domains">Domains ({{ domains-count.count }})</a>
-          </a>
-        </li>
-        <li>
-          <a href="{{servlet-context}}/download/records">Records ({{ records-count.count }})</a>
-          </a>
-        </li>
+        <li><a href="{{servlet-context}}/download/domains">Domains ({{ domains-count.count }})</a></li>
+        <li><a href="{{servlet-context}}/download/records">Records ({{ records-count.count }})</a></li>
+      </ul>
     </div>
   </div>
-
   
-
+  <div class="row spacer">
+    <div class="col-md-12">
+      <h4>Note</h4>
+      <p>This site is for demonstration purposes and should be considered a proof of concept. Additionally, the data may at anytime be removed during upgrades or as the site evolves. For more details about this site's development visit the <a href="{{servlet-context}}/about">about</a> page. Suggestions are certainly welcome.
+      </p>
+    </div>
+  </div>
   
 </div>
   

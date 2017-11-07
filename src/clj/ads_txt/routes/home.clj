@@ -52,15 +52,26 @@
                           :comment (:comment d)})
         (catch java.lang.Exception e
           ;; ignore duplicate entries
-          )))))
+          )))
+    id))
 
-(defn process-domain! [request]
+(defn check-domain! [request]
   ;; save the domain to the databse first
   (if-let [hostname (save-domain! request)]
     ;; craw the domain
-    (crawl-domain-save hostname))
-    ;; show domains page
-  (response/found "/domains"))
+    (let [id (crawl-domain-save hostname)]
+      (layout/render
+       "home.html"
+       (merge {:records (db/get-records-for-domain-id id)
+               :id (:id id)
+               :domain-name hostname
+               :domains-count (db/get-domains-count)
+               :records-count (db/get-records-count)
+               })))))
+
+(defn crawl-domain! [domain]
+  (if-let [hostname (save-domain! {:params {:name domain}})]
+    (crawl-domain-save hostname)))
 
 (defn domain-data-csv [report]
   (let [header ["name", "count"]
@@ -72,6 +83,7 @@
               report)]
     (with-out-str (csv/write-csv *out* data))))
 
+
 (defn download-domains-list-csv []
   (let [data (db/get-domains)]
     {:status 200
@@ -81,6 +93,7 @@
                "Content-Disposition" (str "attachment; filename=ads-txt-domains.csv")}
      :body (domain-data-csv data)}
     ))
+
 
 (defn domains-page [{:keys [params]}]
   (if (:csv params)
@@ -101,37 +114,34 @@
     (with-out-str (csv/write-csv *out* data)))
   )
 
-
-(defn download-records-list-csv [params]
-  (let [data (if-let [id (:id params)]
-               (db/get-records-for-domain {:id (Integer/parseInt id)})
+(defn download-records-list-csv [id]
+  (let [data (if-let [id id]
+               (db/get-records-for-domain-id {:id (Integer/parseInt id)})
                (db/get-records))
-        ]
+        name (format "ads-txt-records-%s.csv" (if-let [id id]
+                                                (:name (db/get-domain-name {:id (Integer/parseInt id)}))
+                                               "all"))]
     {:status 200
      :headers {"Content-Type" "text/csv; charset=utf-8"
                "Content-Length"      (str (count data))
                "Cache-Control"       "no-cache"
-               "Content-Disposition" (str "attachment; filename=ads-txt-records.csv")}
+               "Content-Disposition" (str "attachment; filename=" name)}
      :body (records-data-csv data)}
     )
 )
 
-(defn records-page [{:keys [params]}]
-  (if (:csv params)
-    (download-records-list-csv params)
-    (layout/render
-     "records.html"
-     (merge {:records
-             (if-let [id (:id params)]
-               (db/get-records-for-domain-id {:id (Integer/parseInt id)})
-               (db/get-records))
-             :id (:id params)
-             :domain-name
-             (if-let [id (:id params)]
-               (db/get-domain-name {:id (Integer/parseInt id)})
-               )
-             }
-            (select-keys params [:name :errors :message])))))
+
+(defn records-page [id]
+  (layout/render
+   "records.html"
+   (merge {:records (if-let [id id]
+                      (db/get-records-for-domain-id {:id (Integer/parseInt id)})
+                      (db/get-records))
+           :id id
+           :domain-name (if-let [id id]
+                          (db/get-domain-name {:id (Integer/parseInt id)}))
+           })
+   ))
 
 (defn home-page []
   (layout/render
@@ -142,33 +152,17 @@
 (defn about-page []
   (layout/render "about.html"))
 
-;; (defn test []
-;;   (try
-;;       (db/save-record! {:domain_id 7
-;;                         :exchange_domain "exchange-domain"
-;;                         :seller_account_id "seller-account-id"
-;;                         :account_type "account-type"
-;;                         :tag_id "tagid"
-;;                         :comment "this is a comment"})
-;;       (catch java.lang.Exception e
-;;         ;; ignore duplicates
-;;         ))
-;;   (response/found "/domains"))
-
-;; (defn test2 []
-;;   (let [domain "businessinsider.com"]
-;;     (save-domain! {:params {:name domain}})
-;;     (crawl-domain-save domain))
-;;   (response/found "/domains"))
-
-
 (defroutes home-routes
   (GET "/" [] (home-page))
+  (POST "/" request (check-domain! request))
+  
   (GET "/domains" request (domains-page request))
-  (POST "/domains" request (process-domain! request))
-  (GET "/records" request (records-page request))
-  (GET "/about" [] (about-page))
-  ;; (GET "/test" [] (test))
-  ;; (GET "/test2" [] (test2))
-  )
+  (GET "/records" request (records-page nil))
+  (GET "/records/:id" [id] (records-page id))
+
+  (GET "/download/domains" request (download-domains-list-csv))
+  (GET "/download/records" request (download-records-list-csv nil))
+  (GET "/download/records/:id" [id] (download-records-list-csv id))
+  
+  (GET "/about" [] (about-page)))
 

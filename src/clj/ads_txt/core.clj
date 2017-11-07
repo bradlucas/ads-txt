@@ -57,9 +57,9 @@
     (doseq [line (line-seq rdr)]
       ;; (h/process-domain! {:params {:name (clojure.string/trim line)}})
       ;;      {:params {:name "wordpress.com"}}
-      (let [p {:params {:name (clojure.string/trim line)}}]
-        (println (format "Crawling %s" (:name (:params p))))
-        (h/process-domain! p)
+      (let [domain (clojure.string/trim line)]
+        (println (format "Crawling %s" domain))
+        (h/crawl-domain! domain)
         ))
     )
   (stop-app))

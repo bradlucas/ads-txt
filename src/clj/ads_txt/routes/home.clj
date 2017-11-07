@@ -69,6 +69,9 @@
                :records-count (db/get-records-count)
                })))))
 
+(defn crawl-domain! [domain]
+  (if-let [hostname (save-domain! {:params {:name domain}})]
+    (crawl-domain-save hostname)))
 
 (defn domain-data-csv [report]
   (let [header ["name", "count"]

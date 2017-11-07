@@ -1,14 +1,14 @@
 (ns ads-txt.routes.home
-  (:require [ads-txt.layout :as layout]
-            [compojure.core :refer [defroutes GET POST]]
-            [ads-txt.db.core :as db]
-            [ring.util.http-response :as response]
-            [clojure.java.io :as io]
-            [clojure.data.csv :as csv]
-            [struct.core :as st]
-            [clojurewerkz.urly.core :refer [url-like as-map]]
+  (:require [ads-txt-crawler.crawl :as c]
             [ads-txt-crawler.domains :as d]
-            [ads-txt-crawler.crawl :as c]))
+            [ads-txt.db.core :as db]
+            [ads-txt.layout :as layout]
+            [clojure.data.csv :as csv]
+            [clojure.java.io :as io]
+            [clojurewerkz.urly.core :refer [url-like as-map]]
+            [compojure.core :refer [defroutes GET POST]]
+            [ring.util.http-response :as response]
+            [struct.core :as st]))
 
 (def name-schema
   [[:name
@@ -73,96 +73,16 @@
   (if-let [hostname (save-domain! {:params {:name domain}})]
     (crawl-domain-save hostname)))
 
-(defn domain-data-csv [report]
-  (let [header ["name", "count"]
-        data (map 
-              (fn [line] 
-                (vec (map 
-                      (fn [item] (get line (keyword item))) header)
-                     ))
-              report)]
-    (with-out-str (csv/write-csv *out* data))))
-
-
-(defn download-domains-list-csv []
-  (let [data (db/get-domains)]
-    {:status 200
-     :headers {"Content-Type" "text/csv; charset=utf-8"
-               "Content-Length"      (str (count data))
-               "Cache-Control"       "no-cache"
-               "Content-Disposition" (str "attachment; filename=ads-txt-domains.csv")}
-     :body (domain-data-csv data)}
-    ))
-
-
-(defn domains-page [{:keys [params]}]
-  (if (:csv params)
-    (download-domains-list-csv)
-    (layout/render
-     "domains.html"
-     (merge {:domains (db/get-domains)}
-            (select-keys params [:name :errors :message])))))
-
-(defn records-data-csv [report]
-  (let [header ["name", "exchange_domain", "seller_account_id", "account_type", "tag_id", "comment"]
-        data (map 
-              (fn [line] 
-                (vec (map 
-                      (fn [item] (get line (keyword item))) header)
-                     ))
-              report)]
-    (with-out-str (csv/write-csv *out* data)))
-  )
-
-(defn download-records-list-csv [id]
-  (let [data (if-let [id id]
-               (db/get-records-for-domain-id {:id (Integer/parseInt id)})
-               (db/get-records))
-        name (format "ads-txt-records-%s.csv" (if-let [id id]
-                                                (:name (db/get-domain-name {:id (Integer/parseInt id)}))
-                                               "all"))]
-    {:status 200
-     :headers {"Content-Type" "text/csv; charset=utf-8"
-               "Content-Length"      (str (count data))
-               "Cache-Control"       "no-cache"
-               "Content-Disposition" (str "attachment; filename=" name)}
-     :body (records-data-csv data)}
-    )
-)
-
-
-(defn records-page [id]
-  (layout/render
-   "records.html"
-   (merge {:records (if-let [id id]
-                      (db/get-records-for-domain-id {:id (Integer/parseInt id)})
-                      (db/get-records))
-           :id id
-           :domain-name (if-let [id id]
-                          (db/get-domain-name {:id (Integer/parseInt id)}))
-           })
-   ))
-
 (defn home-page []
   (layout/render
    "home.html"
    {:domains-count (db/get-domains-count)
     :records-count (db/get-records-count)}))
 
-(defn about-page []
-  (layout/render "about.html"))
-
 (defroutes home-routes
   (GET "/" [] (home-page))
-  (POST "/" request (check-domain! request))
-  
-  (GET "/domains" request (domains-page request))
-  (GET "/records" request (records-page nil))
-  (GET "/records/:id" [id] (records-page id))
+  (POST "/" request (check-domain! request)))
 
-  (GET "/download/domains" request (download-domains-list-csv))
-  (GET "/download/records" request (download-records-list-csv nil))
-  (GET "/download/records/:id" [id] (download-records-list-csv id))
   
-  (GET "/about" [] (about-page)))
+
 

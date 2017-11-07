@@ -89,6 +89,17 @@
     (with-out-str (csv/write-csv *out* data))))
 
 
+(defn download-domains-list-csv []
+  (let [data (db/get-domains)]
+    {:status 200
+     :headers {"Content-Type" "text/csv; charset=utf-8"
+               "Content-Length"      (str (count data))
+               "Cache-Control"       "no-cache"
+               "Content-Disposition" (str "attachment; filename=ads-txt-domains.csv")}
+     :body (domain-data-csv data)}
+    ))
+
+
 (defn domains-page [{:keys [params]}]
   (if (:csv params)
     (download-domains-list-csv)
@@ -107,6 +118,22 @@
               report)]
     (with-out-str (csv/write-csv *out* data)))
   )
+
+(defn download-records-list-csv [id]
+  (let [data (if-let [id id]
+               (db/get-records-for-domain-id {:id (Integer/parseInt id)})
+               (db/get-records))
+        name (format "ads-txt-records-%s.csv" (if-let [id id]
+                                                (:name (db/get-domain-name {:id (Integer/parseInt id)}))
+                                               "all"))]
+    {:status 200
+     :headers {"Content-Type" "text/csv; charset=utf-8"
+               "Content-Length"      (str (count data))
+               "Cache-Control"       "no-cache"
+               "Content-Disposition" (str "attachment; filename=" name)}
+     :body (records-data-csv data)}
+    )
+)
 
 
 (defn records-page [{:keys [params]}]
@@ -159,32 +186,6 @@
   )
 
 
-
-(defn download-domains-list-csv []
-  (let [data (db/get-domains)]
-    {:status 200
-     :headers {"Content-Type" "text/csv; charset=utf-8"
-               "Content-Length"      (str (count data))
-               "Cache-Control"       "no-cache"
-               "Content-Disposition" (str "attachment; filename=ads-txt-domains.csv")}
-     :body (domain-data-csv data)}
-    ))
-
-(defn download-records-list-csv [id]
-  (let [data (if-let [id id]
-               (db/get-records-for-domain-id {:id (Integer/parseInt id)})
-               (db/get-records))
-        name (format "ads-txt-records-%s.csv" (if-let [id id]
-                                                (:name (db/get-domain-name {:id (Integer/parseInt id)}))
-                                               "all"))]
-    {:status 200
-     :headers {"Content-Type" "text/csv; charset=utf-8"
-               "Content-Length"      (str (count data))
-               "Cache-Control"       "no-cache"
-               "Content-Disposition" (str "attachment; filename=" name)}
-     :body (records-data-csv data)}
-    )
-)
 
 
 

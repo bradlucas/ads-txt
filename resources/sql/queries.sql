@@ -65,3 +65,10 @@ select d.name, r.* from domains d, records r where d.id=r.domain_id and d.name =
 -- :name check :? :1
 -- :doc check for record instance
 select d.name, r.* from domains d, records r where d.id=r.domain_id and d.name=:domain and r.exchange_domain=:exchange-domain and r.seller_account_id=:seller-account-id and r.account_type=:account-type;
+
+
+-- :name truncate-tables :!
+truncate domains cascade;
+
+-- :name reset-domains-index :!
+alter sequence domains_id_seq restart with 1;

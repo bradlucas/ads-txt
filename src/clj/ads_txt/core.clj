@@ -76,6 +76,14 @@
       (mount/start #'ads-txt.config/env)
       (migrations/migrate args (select-keys env [:database-url]))
       (System/exit 0))
+    (some #{"truncate"} args)
+    (do
+      (mount/start #'ads-txt.config/env)
+      (mount/start #'ads-txt.db.core/*db*)
+      (ads-txt.db.core/truncate-tables)
+      (ads-txt.db.core/reset-domains-index)
+      (mount/stop #'ads-txt.db.core/*db*)
+     (System/exit 0))
     :else
     (start-app args))
   )

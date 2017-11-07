@@ -55,14 +55,6 @@
           )))
     id))
 
-(defn process-domain! [request]
-  ;; save the domain to the databse first
-  (if-let [hostname (save-domain! request)]
-    ;; craw the domain
-    (crawl-domain-save hostname))
-    ;; show domains page
-  (response/found "/domains"))
-
 (defn check-domain! [request]
   ;; save the domain to the databse first
   (if-let [hostname (save-domain! request)]
@@ -136,22 +128,17 @@
 )
 
 
-(defn records-page [{:keys [params]}]
-  (if (:csv params)
-    (download-records-list-csv params)
-    (layout/render
-     "records.html"
-     (merge {:records
-             (if-let [id (:id params)]
-               (db/get-records-for-domain-id {:id (Integer/parseInt id)})
-               (db/get-records))
-             :id (:id params)
-             :domain-name
-             (if-let [id (:id params)]
-               (db/get-domain-name {:id (Integer/parseInt id)})
-               )
-             }
-            (select-keys params [:name :errors :message])))))
+(defn records-page [id]
+  (layout/render
+   "records.html"
+   (merge {:records (if-let [id id]
+                      (db/get-records-for-domain-id {:id (Integer/parseInt id)})
+                      (db/get-records))
+           :id id
+           :domain-name (if-let [id id]
+                          (db/get-domain-name {:id (Integer/parseInt id)}))
+           })
+   ))
 
 (defn home-page []
   (layout/render
@@ -167,8 +154,8 @@
   (POST "/" request (check-domain! request))
   
   (GET "/domains" request (domains-page request))
-  (POST "/domains" request (process-domain! request))
-  (GET "/records" request (records-page request))
+  (GET "/records" request (records-page nil))
+  (GET "/records/:id" [id] (records-page id))
 
   (GET "/download/domains" request (download-domains-list-csv))
   (GET "/download/records" request (download-records-list-csv nil))

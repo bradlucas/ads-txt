@@ -13,14 +13,14 @@
       <div class="pull-right">Count: {{domains|count}}</div>
       <table class="table table-striped table-bordered" data-toggle="table">
         <thead>
-          <tr><th data-field="domain" data-sortable="true">Domain</th><th data-field="records" data-sortable="true">Record Count</th><th>Records</th></tr>
+          <tr><th data-field="domain" data-sortable="true">Domain</th><th data-field="records" data-sortable="true">Record Count</th><th>View Records</th></tr>
         </thead>
         <tbody>
             {% for item in domains %}
             <tr>
               <td>{{item.name}}</td>
               <td>{{item.count}}</td>
-              <td><a href="{{servlet-context}}/records?id={{item.id}}">-></a></td>
+              <td><a href="{{servlet-context}}/records/{{item.id}}">-></a></td>
             </tr>
             {% endfor %}
         </tbody>
@@ -31,7 +31,7 @@
 
   <div class="row">
     <div class="col-md-12">
-      <a class="pull-right" href="{{servlet-context}}/domains?csv=t">Download</a>
+      <a class="pull-right" href="{{servlet-context}}/download/domains">Download</a>
     </div>
   </div>
   
@@ -39,31 +39,6 @@
     <!-- todo: fix sortable table which removed the required padding -->
   </div>
       
-  <div class="row">
-    <div class="col-md-12">
-        <form method="POST" action="/domains">
-                {% csrf-field %}
-                <p>
-                    <input class="form-control"
-                           type="text"
-                           name="name"
-                           value="{{name}}" />
-                </p>
-                {% if errors.name %}
-                <div class="alert alert-danger">{{errors.name|join}}</div>
-                {% endif %}
-                {% if errors.message %}
-                <div class="alert alert-danger">{{errors.message|join}}</div>
-                {% endif %}
-                {% if message %}
-                <div class="alert alert-danger">{{message}}</div>
-                {% endif %}
-                <input type="submit" class="btn btn-primary" value="Add Domain" />
-        </form>
-    </div>
-  </div>
-
-
 
 </div>
   

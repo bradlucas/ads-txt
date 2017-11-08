@@ -1,7 +1,7 @@
 (ns ads-txt.routes.api
   (:require [compojure.core :refer [defroutes GET POST]]
             [ads-txt.db.core :as db]
-            [ads-txt.routes.home :as home]
+            [ads-txt.crawl :as c]
             [ring.util.response :refer [response content-type]]
             [ring.util.http-response :as response]))
 
@@ -36,7 +36,7 @@
     (catch java.lang.Exception e
       ;; ignore duplicate errors
       ))
-  (home/crawl-domain-save name)
+  (c/crawl-domain-save name)
   (response/ok))
 
 (defroutes api-routes

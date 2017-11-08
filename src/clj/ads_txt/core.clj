@@ -8,7 +8,7 @@
             [clojure.tools.logging :as log]
             [mount.core :as mount]
             [clojure.java.io :refer [reader]]
-            [ads-txt.routes.home :as h]
+            [ads-txt.crawl :as c]
             )
   (:gen-class))
 
@@ -59,7 +59,7 @@
       ;;      {:params {:name "wordpress.com"}}
       (let [domain (clojure.string/trim line)]
         (println (format "Crawling %s" domain))
-        (h/crawl-domain! domain)
+        (c/crawl-domain! domain)
         ))
     )
   (stop-app))
@@ -75,6 +75,21 @@
     (do
       (mount/start #'ads-txt.config/env)
       (migrations/migrate args (select-keys env [:database-url]))
+      (System/exit 0))
+    (some #{"truncate"} args)
+    (do
+      (mount/start #'ads-txt.config/env)
+      (mount/start #'ads-txt.db.core/*db*)
+      (ads-txt.db.core/truncate-tables)
+      (ads-txt.db.core/reset-domains-index)
+      (mount/stop #'ads-txt.db.core/*db*)
+      (System/exit 0))
+    (some #{"crawl"} args)
+    (do
+      (mount/start #'ads-txt.config/env)
+      (mount/start #'ads-txt.db.core/*db*)
+      (c/crawl-all-domains)
+      (mount/stop #'ads-txt.db.core/*db*)
       (System/exit 0))
     :else
     (start-app args))

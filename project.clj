@@ -1,11 +1,11 @@
-(defproject ads-txt "0.0.5"
+(defproject ads-txt "0.0.6"
 
   :description "A site which uses `ads-txt-crawler` to retrieve and store Ads.txt file contents"
   :url "http://ads-txt.herokuapp.com/"
 
   :dependencies [[clj-time "0.14.0"]
                  [clojurewerkz/urly "1.0.0"]
-                 [com.bradlucas/ads-txt-crawler "0.0.8"]
+                 [com.bradlucas/ads-txt-crawler "0.0.9"]
                  [compojure "1.6.0"]
                  [conman "0.6.8"]
                  [cprop "0.1.11"]

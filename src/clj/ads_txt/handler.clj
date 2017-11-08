@@ -1,8 +1,9 @@
 (ns ads-txt.handler
   (:require [compojure.core :refer [routes wrap-routes]]
             [ads-txt.layout :refer [error-page]]
-            [ads-txt.routes.home :refer [home-routes]]
+            ;; [ads-txt.routes.home :refer [home-routes]]
             [ads-txt.routes.api :refer [api-routes]]
+            [ads-txt.routes.ui :refer [ui-routes]]
             [compojure.route :as route]
             [ads-txt.env :refer [defaults]]
             [mount.core :as mount]
@@ -14,7 +15,7 @@
 
 (def app-routes
   (routes
-    (-> #'home-routes
+    (-> #'ui-routes
         (wrap-routes middleware/wrap-csrf)
         (wrap-routes middleware/wrap-formats))
     (-> #'api-routes

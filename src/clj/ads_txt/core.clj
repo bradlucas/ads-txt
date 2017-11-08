@@ -8,7 +8,7 @@
             [clojure.tools.logging :as log]
             [mount.core :as mount]
             [clojure.java.io :refer [reader]]
-            [ads-txt.routes.home :as h]
+            [ads-txt.crawl :as c]
             )
   (:gen-class))
 
@@ -59,7 +59,7 @@
       ;;      {:params {:name "wordpress.com"}}
       (let [domain (clojure.string/trim line)]
         (println (format "Crawling %s" domain))
-        (h/crawl-domain! domain)
+        (c/crawl-domain! domain)
         ))
     )
   (stop-app))

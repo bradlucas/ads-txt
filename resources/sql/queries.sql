@@ -72,3 +72,9 @@ truncate domains cascade;
 
 -- :name reset-domains-index :!
 alter sequence domains_id_seq restart with 1;
+
+
+
+-- :name delete-domain-records :! :n
+delete from records where domain_id = :id
+

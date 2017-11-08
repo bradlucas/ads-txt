@@ -46,7 +46,10 @@
     (if (st/valid? {:name hostname} name-schema)
       (do
         (try
-          (db/save-domain! params)
+          ;; if we've already crawled this domain, delete previous records
+          (if-let [id (db/get-domain-id {:name hostname})]
+            (db/delete-domain-records id)
+            (db/save-domain! params))
           (catch java.lang.Exception e
             ;; ignore duplicate entries
             ))
@@ -74,7 +77,7 @@
 (defn check-domain! [request]
   ;; save the domain to the databse first
   (if-let [hostname (save-domain! request)]
-    ;; craw the domain
+    ;; crawl the domain
     (let [id (crawl-domain-save hostname)]
       [id hostname])))
 

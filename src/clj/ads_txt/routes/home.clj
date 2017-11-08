@@ -8,13 +8,16 @@
 (defn check-domain [request]
   (let [[id hostname] (c/check-domain! request)]
     (layout/render
-       "home.html"
+     "home.html"
+     (if id 
        (merge {:records (db/get-records-for-domain-id id)
                :id (:id id)
                :domain-name hostname
                :domains-count (db/get-domains-count)
-               :records-count (db/get-records-count)
-               }))))
+               :records-count (db/get-records-count)})
+       (merge  {:domains-count (db/get-domains-count)
+                :records-count (db/get-records-count)})
+              ))))
 
 (defn home-page []
   (layout/render

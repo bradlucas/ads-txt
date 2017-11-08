@@ -24,20 +24,35 @@
   (if-let [hostname (:host (as-map (url-like (clojure.string/trim url))))]
     (d/strip-www hostname)))
 
+
+;; (defn save-domain! [{:keys [params]}]
+;;   (if-let [hostname (hostname (:name params))]
+;;     (let [params (assoc params :name hostname)]
+;;       (if-let [errors (validate-name params)]
+;;         ;; TODO move this back into hme.clj or similar
+;;         (-> (response/found "/domains")
+;;             (assoc :flash (assoc params :errors errors)))
+;;         (do
+;;           (try
+;;             (db/save-domain! params)
+;;             (catch java.lang.Exception e
+;;               ;; ignore duplicate entries
+;;               ))
+;;           hostname)))))
+
+
 (defn save-domain! [{:keys [params]}]
-  (if-let [hostname (hostname (:name params))]
-    (let [params (assoc params :name hostname)]
-      (if-let [errors (validate-name params)]
-        ;; TODO move this back into hme.clj or similar
-        (-> (response/found "/domains")
-            (assoc :flash (assoc params :errors errors)))
-        (do
-          (try
-            (db/save-domain! params)
-            (catch java.lang.Exception e
-              ;; ignore duplicate entries
-              ))
-          hostname)))))
+  (let [hostname (hostname (:name params))]
+    (if (st/valid? {:name hostname} name-schema)
+      (do
+        (try
+          (db/save-domain! params)
+          (catch java.lang.Exception e
+            ;; ignore duplicate entries
+            ))
+        hostname)
+        nil)))
+
 
 (defn crawl-domain-save [domain-name]
   (let [id (db/get-domain-id {:name domain-name})

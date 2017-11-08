@@ -14,7 +14,7 @@ VALUES(:domain_id, :exchange_domain, :seller_account_id, :account_type, :tag_id,
 -- :name get-domains :? :*
 -- :doc selects all available domains
 -- SELECT * from domains ORDER BY name ASC;
-select d.id, d.name, d.timestamp, count(r.domain_id) as count from domains d left join records r on d.id=r.domain_id group by d.id, d.name order by d.name ASC;
+select d.id, d.name, d.createdate, d.crawldate, count(r.domain_id) as count from domains d left join records r on d.id=r.domain_id group by d.id, d.name order by d.name ASC;
 
 -- :name get-domain-id :? :1
 -- :doc select id from domains where name
@@ -78,3 +78,6 @@ alter sequence domains_id_seq restart with 1;
 -- :name delete-domain-records :! :n
 delete from records where domain_id = :id
 
+
+-- :name update-domain-crawldate :! :1
+update domains set crawldate=now() where id = :id

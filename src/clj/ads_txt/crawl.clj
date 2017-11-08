@@ -72,6 +72,8 @@
         (catch java.lang.Exception e
           ;; ignore duplicate entries
           )))
+    ;; update crawldate
+    (db/update-domain-crawldate id)
     id))
 
 (defn check-domain! [request]
@@ -85,3 +87,9 @@
   (if-let [hostname (save-domain! {:params {:name domain}})]
     (crawl-domain-save hostname)))
 
+
+
+(defn crawl-all-domains []
+  (let [domains (db/get-domains)]
+    (doseq [domain domains]
+      (crawl-domain-save (:name domain)))))

@@ -83,7 +83,14 @@
       (ads-txt.db.core/truncate-tables)
       (ads-txt.db.core/reset-domains-index)
       (mount/stop #'ads-txt.db.core/*db*)
-     (System/exit 0))
+      (System/exit 0))
+    (some #{"crawl"} args)
+    (do
+      (mount/start #'ads-txt.config/env)
+      (mount/start #'ads-txt.db.core/*db*)
+      (c/crawl-all-domains)
+      (mount/stop #'ads-txt.db.core/*db*)
+      (System/exit 0))
     :else
     (start-app args))
   )

@@ -22,7 +22,7 @@ select d.id from domains d where d.name = :name
 
 -- :name get-records-for-domain :? :*
 -- :doc selects all available records for a specific domain by name
-select d.name, r.* from domains d, records r where d.id=r.domain_id and d.name = :name order by d.name;
+select d.name, r.* from domains d, records r where d.id=r.domain_id and d.name = :name order by r.order_id asc;
 
 -- :name get-records :? :*
 -- :doc selects all available records
@@ -55,11 +55,11 @@ select d.* from domains d where d.name=:name
 
 -- :name get-records-for-domain-id :? :*
 -- :doc selects all available records for a specific domain by id
-select d.name, r.* from domains d, records r where d.id=r.domain_id and d.id = :id order by d.name;
+select d.name, r.* from domains d, records r where d.id=r.domain_id and d.id = :id order by r.order_id asc;
 
 -- :name get-records-for-domain-name :? :*
 -- :doc selects all available records for a specific domain by name
-select d.name, r.* from domains d, records r where d.id=r.domain_id and d.name = :name order by d.name;
+select d.name, r.* from domains d, records r where d.id=r.domain_id and d.name = :name order by r.order_id asc;
 
 
 -- :name check :? :1

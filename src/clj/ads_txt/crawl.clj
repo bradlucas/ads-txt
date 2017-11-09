@@ -61,6 +61,7 @@
   (let [id (db/get-domain-id {:name domain-name})
         records (:records (c/get-data domain-name))
         data (filter (fn [r] (and (not-empty (:account-id r)) (not-empty (:account-id r)))) records)]
+    (println (format "Crawling %s" domain-name))
     (db/save-domain-url (assoc id  :url (c/build-url domain-name)))    ;; TODO this should be done more clearly elsewhere
     (doseq [[idx d] (map-indexed (fn [i v] [i v]) data)]
       (try
@@ -89,9 +90,8 @@
   (if-let [hostname (save-domain! {:params {:name domain}})]
     (crawl-domain-save hostname)))
 
-
-
 (defn crawl-all-domains []
   (let [domains (db/get-domains)]
     (doseq [domain domains]
+      (save-domain! {:params domain})  
       (crawl-domain-save (:name domain)))))

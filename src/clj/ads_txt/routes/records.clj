@@ -40,6 +40,7 @@
                       (db/get-records-for-domain-id {:id (Integer/parseInt id)})
                       (db/get-records))
            :id id
+           :url (:url (db/get-domain-by-id {:id (Integer/parseInt id)}))    ;; TODO another weak point
            :domain-name (if-let [id id]
                           (db/get-domain-name {:id (Integer/parseInt id)}))
            })

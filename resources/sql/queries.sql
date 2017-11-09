@@ -7,8 +7,8 @@ VALUES(:name)
 -- :name save-record! :! :n
 -- :doc saves a new record
 INSERT INTO records
-(domain_id, exchange_domain, seller_account_id, account_type, tag_id, comment)
-VALUES(:domain_id, :exchange_domain, :seller_account_id, :account_type, :tag_id, :comment)
+(domain_id, exchange_domain, seller_account_id, account_type, tag_id, comment, order_id)
+VALUES(:domain_id, :exchange_domain, :seller_account_id, :account_type, :tag_id, :comment, :order_id)
 
 
 -- :name get-domains :? :*

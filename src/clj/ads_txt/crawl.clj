@@ -61,15 +61,17 @@
   (let [id (db/get-domain-id {:name domain-name})
         records (:records (c/get-data domain-name))
         data (filter (fn [r] (and (not-empty (:account-id r)) (not-empty (:account-id r)))) records)]
+    (println (format "Crawling %s" domain-name))
     (db/save-domain-url (assoc id  :url (c/build-url domain-name)))    ;; TODO this should be done more clearly elsewhere
-    (doseq [d data]
+    (doseq [[idx d] (map-indexed (fn [i v] [i v]) data)]
       (try
         (db/save-record! {:domain_id (:id id)
                           :exchange_domain (:exchange-domain d)
                           :seller_account_id (:account-id d)
                           :account_type (:account-type d)
                           :tag_id (:tag-id d)
-                          :comment (:comment d)})
+                          :comment (:comment d)
+                          :order_id (inc idx)})    ;; 1-based order
         (catch java.lang.Exception e
           ;; ignore duplicate entries
           )))
@@ -88,9 +90,8 @@
   (if-let [hostname (save-domain! {:params {:name domain}})]
     (crawl-domain-save hostname)))
 
-
-
 (defn crawl-all-domains []
   (let [domains (db/get-domains)]
     (doseq [domain domains]
+      (save-domain! {:params domain})  
       (crawl-domain-save (:name domain)))))

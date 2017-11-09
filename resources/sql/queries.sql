@@ -7,14 +7,14 @@ VALUES(:name)
 -- :name save-record! :! :n
 -- :doc saves a new record
 INSERT INTO records
-(domain_id, exchange_domain, seller_account_id, account_type, tag_id, comment)
-VALUES(:domain_id, :exchange_domain, :seller_account_id, :account_type, :tag_id, :comment)
+(domain_id, exchange_domain, seller_account_id, account_type, tag_id, comment, order_id)
+VALUES(:domain_id, :exchange_domain, :seller_account_id, :account_type, :tag_id, :comment, :order_id)
 
 
 -- :name get-domains :? :*
 -- :doc selects all available domains
 -- SELECT * from domains ORDER BY name ASC;
-select d.id, d.name, d.createdate, d.crawldate, count(r.domain_id) as count from domains d left join records r on d.id=r.domain_id group by d.id, d.name order by d.name ASC;
+select d.id, d.name, d.createdate, d.crawldate, count(r.domain_id) as count, d.url from domains d left join records r on d.id=r.domain_id group by d.id, d.name order by d.name ASC;
 
 -- :name get-domain-id :? :1
 -- :doc select id from domains where name
@@ -81,3 +81,7 @@ delete from records where domain_id = :id
 
 -- :name update-domain-crawldate :! :1
 update domains set crawldate=now() where id = :id
+
+
+-- :name save-domain-url :! :1
+update domains set url=:url where id=:id

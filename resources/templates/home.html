@@ -48,12 +48,13 @@
     <div class="col-md-12">
       <table class="table table-striped table-bordered"  data-toggle="table">
         <thead>
-          <tr><th data-field="domain" data-sortable="true">Domain</th><th data-field="exchange" data-sortable="true">Exchange Domain</th>
+          <tr><th data-field="order-id" data-sortable="true">Number</th><th data-field="domain" data-sortable="true">Domain</th><th data-field="exchange" data-sortable="true">Exchange Domain</th>
           <th data-field="seller" data-sortable="true">Seller Account Id</th><th data-field="type" data-sortable="true">Account Type</th><th data-field="tag" data-sortable="true">Tag Id</th></tr>
         </thead>
         <tbody>
         {% for item in records %}
         <tr>
+          <td>{{item.order_id}}</td>
           <td>
             {% if domain-name %}
             {{item.name}}
@@ -70,6 +71,9 @@
 
   <div class="row">
     <div class="col-md-12">
+      {% if url %}
+      <a class="pull-left" href="{{url}}" target="_default">Ads.txt Link</a>
+      {% endif %}
       {% if id %}
       <a class="pull-right" href="{{servlet-context}}/download/records/{{id}}">Download Results</a>
       {% endif %}

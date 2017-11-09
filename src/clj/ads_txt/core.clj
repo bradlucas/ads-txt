@@ -58,7 +58,6 @@
       ;; (h/process-domain! {:params {:name (clojure.string/trim line)}})
       ;;      {:params {:name "wordpress.com"}}
       (let [domain (clojure.string/trim line)]
-        (println (format "Crawling %s" domain))
         (c/crawl-domain! domain)
         ))
     )
@@ -98,8 +97,8 @@
 (defn -main [& args]
   ;; parse args
   (let [opts (parse-opts args cli-options)]
-    (println (:options opts))
-    (println (:arguments opts))
+    ;; (println (:options opts))
+    ;; (println (:arguments opts))
     (if-let [targets-list (:targets (:options opts))]
       (crawl-targets targets-list)
       (process-cmdline-args args))))

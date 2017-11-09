@@ -17,6 +17,7 @@
             <th data-field="domain" data-sortable="true">Domain</th>
             <th data-field="createdate" data-sortable="true">Create Date</th>
             <th data-field="crawldate" data-sortable="true">Crawl Date</th>
+            <th data-field="url" data-sortable="true">Ads.txt Link</th>
             <th data-field="records" data-sortable="true">Record Count</th>
             <th>View Records</th></tr>
         </thead>
@@ -26,6 +27,7 @@
               <td>{{item.name}}</td>
               <td>{{item.createdate}}</td>
               <td>{{item.crawldate}}</td>
+              <td><a href="{{item.url}}" target="_default">{{item.url}}</a></td>
               <td>{{item.count}}</td>
               <td><a href="{{servlet-context}}/records/{{item.id}}">-></a></td>
             </tr>

@@ -61,6 +61,7 @@
   (let [id (db/get-domain-id {:name domain-name})
         records (:records (c/get-data domain-name))
         data (filter (fn [r] (and (not-empty (:account-id r)) (not-empty (:account-id r)))) records)]
+    (db/save-domain-url (assoc id  :url (c/build-url domain-name)))    ;; TODO this should be done more clearly elsewhere
     (doseq [d data]
       (try
         (db/save-record! {:domain_id (:id id)

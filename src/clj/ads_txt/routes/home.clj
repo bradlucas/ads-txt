@@ -13,6 +13,7 @@
        (merge {:records (db/get-records-for-domain-id id)
                :id (:id id)
                :domain-name hostname
+               :url (:url (db/get-domain-by-id id))    ;; TODO another weak point
                :domains-count (db/get-domains-count)
                :records-count (db/get-records-count)})
        (merge  {:domains-count (db/get-domains-count)

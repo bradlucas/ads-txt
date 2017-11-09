@@ -41,6 +41,9 @@
 
   <div class="row">
     <div class="col-md-12">
+      {% if url %}
+      <a class="pull-left" href="{{url}}" target="_default">Ads.txt Link</a>
+      {% endif %}
       <a class="pull-right" href="{{servlet-context}}/records?{% if id %}id={{id}}&{% endif %}csv=t">Download</a>
     </div>
   </div>

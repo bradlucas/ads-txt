@@ -24,6 +24,7 @@
   (layout/render
    "home.html"
    {:domains-count (db/get-domains-count)
+    :domains-count-data (db/get-domains-count-with-data)
     :records-count (db/get-records-count)}))
 
 (defroutes home-routes

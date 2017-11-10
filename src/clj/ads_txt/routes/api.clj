@@ -39,8 +39,9 @@
   (c/crawl-domain-save name)
   (response/ok))
 
-(defn slack-command [request]
-  (response/ok "This is a test return message"))
+(defn slack-command [{:keys [params]}]
+  (let [text (:text params)]
+    (response/ok (format "This is a test return message with your command line: %s" text))))
 
 
 (defroutes api-routes

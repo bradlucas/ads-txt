@@ -39,6 +39,10 @@
   (c/crawl-domain-save name)
   (response/ok))
 
+(defn slack-command [request]
+  (response/ok "This is a test return message"))
+
+
 (defroutes api-routes
   (GET "/api/domains" [] (domains))
   (GET "/api/domain/id/:id" [id] (domain-id id))
@@ -50,4 +54,9 @@
 
   (GET "/api/check/:domain/:exchange-domain/:seller-account-id/:account-type" [domain exchange-domain seller-account-id account-type] (check domain exchange-domain seller-account-id account-type))
 
-  (POST "/api/domain" [name] (post-domain name)))
+  (POST "/api/domain" [name] (post-domain name))
+
+
+  (POST "/api/slack/domain" request (slack-command request))
+  
+  )

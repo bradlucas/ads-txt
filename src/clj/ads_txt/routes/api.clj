@@ -44,8 +44,24 @@
   (let [domain (:text params)]
     (if-let [id (c/crawl-domain! domain)]
       (let [records (db/get-records-for-domain-id id)]
-        (response/ok (format "Found %d records in the Ads.txt file for '%s'" (count records) domain)))
-      (response/ok (format "No Ads.txt file data found for '%s'" domain)))))
+        (println records)
+        (response/ok 
+         ;; Put records in a table
+         ;; Link to Ads.txt file
+         ;; (:url (db/get-domain-by-id id))
+         ;; Link to Ads-txt output
+         ;; https://ads-txt.herokuapp.com/records/[ID]
+         {
+          :text (format "Found %d records in the Ads.txt file for '%s'" (count records) domain)
+          :attachments [
+                        {:text (:url (db/get-domain-by-id id))}
+                        {:text (format "https://ads-txt.herokuapp.com/records/%d" (:id id))}
+                        ]
+          }
+         )
+        )
+      (response/ok (format "No Ads.txt file data found for '%s'" domain)))
+    ))
                                                 
 (defroutes api-routes
   (GET "/api/domains" [] (domains))

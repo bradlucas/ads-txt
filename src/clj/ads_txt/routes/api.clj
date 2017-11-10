@@ -40,10 +40,13 @@
   (response/ok))
 
 (defn slack-command [{:keys [params]}]
-  (let [text (:text params)]
-    (response/ok (format "This is a test return message with your command line: %s" text))))
-
-
+  ;; todo split command-line into domains, trim command as well
+  (let [domain (:text params)]
+    (if-let [id (c/crawl-domain! domain)]
+      (let [records (db/get-records-for-domain-id id)]
+        (response/ok (format "Found %d records in the Ads.txt file for '%s'" (count records) domain)))
+      (response/ok (format "No Ads.txt file data found for '%s'" domain)))))
+                                                
 (defroutes api-routes
   (GET "/api/domains" [] (domains))
   (GET "/api/domain/id/:id" [id] (domain-id id))

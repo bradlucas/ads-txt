@@ -32,6 +32,7 @@
    "domains.html"
    (merge {:domains (get-domain-fn)}
           {:download-url (if all-flag "all" "withdata")}
+          {:sub-header (if all-flag "Showing all domains" "Showing only domains with data")}
           (select-keys params [:name :errors :message]))))
 
 

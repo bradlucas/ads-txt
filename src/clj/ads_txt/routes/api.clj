@@ -1,5 +1,6 @@
 (ns ads-txt.routes.api
   (:require [compojure.core :refer [defroutes GET POST]]
+            [doric.core :refer [table]]
             [ads-txt.db.core :as db]
             [ads-txt.crawl :as c]
             [ring.util.response :refer [response content-type]]
@@ -44,7 +45,6 @@
   (let [domain (:text params)]
     (if-let [id (c/crawl-domain! domain)]
       (let [records (db/get-records-for-domain-id id)]
-        (println records)
         (response/ok 
          ;; Put records in a table
          ;; Link to Ads.txt file
@@ -54,6 +54,7 @@
          {
           :text (format "Found %d records in the Ads.txt file for '%s'" (count records) domain)
           :attachments [
+                        {:text (str "```\n" (table [:order_id :exchange_domain :seller_account_id :account_type :tag_id] records) "```\n")}
                         {:text (:url (db/get-domain-by-id id))}
                         {:text (format "https://ads-txt.herokuapp.com/records/%d" (:id id))}
                         ]

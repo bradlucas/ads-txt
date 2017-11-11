@@ -9,6 +9,7 @@
                  [compojure "1.6.0"]
                  [conman "0.6.8"]
                  [cprop "0.1.11"]
+                 [doric "0.9.0"]
                  [funcool/struct "1.1.0"]
                  [luminus-immutant "0.2.3"]
                  [luminus-migrations "0.4.2"]

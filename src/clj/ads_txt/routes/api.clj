@@ -45,6 +45,8 @@
   (let [domain (:text params)]
     (if-let [id (c/crawl-domain! domain)]
       (let [records (db/get-records-for-domain-id id)]
+        ;; (println records)
+        ;; (println (table [:order_id :exchange_domain :seller_account_id :account_type :tag_id] records))
         (response/ok 
          ;; Put records in a table
          ;; Link to Ads.txt file
@@ -54,7 +56,7 @@
          {
           :text (format "Found %d records in the Ads.txt file for '%s'" (count records) domain)
           :attachments [
-                        {:text (str "```\n" (table [:order_id :exchange_domain :seller_account_id :account_type :tag_id] records) "```\n")}
+                        {:text (str "```\n" (table [:order_id :exchange_domain :seller_account_id :account_type :tag_id] records) "\n```\n")}
                         {:text (:url (db/get-domain-by-id id))}
                         {:text (format "https://ads-txt.herokuapp.com/records/%d" (:id id))}
                         ]

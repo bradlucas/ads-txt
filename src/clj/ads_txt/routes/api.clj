@@ -42,11 +42,31 @@
   (response/ok))
 
 
+;; L1 | L2 | L3
+;; --- | --- | ---
+;; 1 | 2 | 3
+
+(defn markdown-table [labels rows]
+  (let [num (count labels)
+        header (clojure.string/join " | " (map name labels ))
+        divider (clojure.string/join " | " (repeat num "---"))
+        row-data(map #((apply juxt labels) %) rows)
+        ]
+    ;; (println header)
+    ;; (println divider)
+    ;; (println (map #(clojure.string/join " | " %) row-data))
+    ;; (println "--------------------------------------------------")
+    (str header "\n"
+         divider "\n"
+         (apply str (map #(str (clojure.string/join " | " %) "\n") row-data)))
+    ))
+  
+
 (defn build-slack-json [domain id records]
   {
    :text (format "Found %d records in the Ads.txt file for '%s'" (count records) domain)
    :attachments [
-                 {:text (str "```" (table [:exchange_domain :seller_account_id :account_type :tag_id] records) "```") :mrkdwn_in ["text"]}
+                 {:text (markdown-table [:exchange_domain :seller_account_id :account_type :tag_id] records) :mrkdwn_in ["text"]}
                  {:text (format "File: %s\n" (:url (db/get-domain-by-id id)))}
                  {:text (format "More: https://ads-txt.herokuapp.com/records/%d" (:id id))}
                  ]

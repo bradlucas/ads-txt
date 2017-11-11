@@ -46,9 +46,9 @@
   {
    :text (format "Found %d records in the Ads.txt file for '%s'" (count records) domain)
    :attachments [
-                 {:text (str "```" (table [:order_id :exchange_domain :seller_account_id :account_type :tag_id] records) "```") :mrkdwn_in ["text"]}
-                 {:text (:url (db/get-domain-by-id id))}
-                 {:text (format "https://ads-txt.herokuapp.com/records/%d" (:id id))}
+                 {:text (str "```\n" (table [:order_id :exchange_domain :seller_account_id :account_type :tag_id] records) "\n```\n") :mrkdwn_in ["text"]}
+                 {:text (format "File: %s\n" (:url (db/get-domain-by-id id)))}
+                 {:text (format "More: https://ads-txt.herokuapp.com/records/%d" (:id id))}
                  ]
    }
   )

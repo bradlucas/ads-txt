@@ -3,6 +3,7 @@
             [doric.core :refer [table]]
             [ads-txt.db.core :as db]
             [ads-txt.crawl :as c]
+            [clojure.data.json :as json]
             [ring.util.response :refer [response content-type]]
             [ring.util.http-response :as response]))
 
@@ -40,6 +41,19 @@
   (c/crawl-domain-save name)
   (response/ok))
 
+
+(defn build-slack-json [domain id records]
+  {
+   :text (format "Found %d records in the Ads.txt file for '%s'" (count records) domain)
+   :attachments [
+                 {:text (str "```" (table [:order_id :exchange_domain :seller_account_id :account_type :tag_id] records) "```") :mrkdwn_in ["text"]}
+                 {:text (:url (db/get-domain-by-id id))}
+                 {:text (format "https://ads-txt.herokuapp.com/records/%d" (:id id))}
+                 ]
+   }
+  )
+
+  
 (defn slack-command [{:keys [params]}]
   ;; todo split command-line into domains, trim command as well
   (let [domain (:text params)]
@@ -53,14 +67,7 @@
          ;; (:url (db/get-domain-by-id id))
          ;; Link to Ads-txt output
          ;; https://ads-txt.herokuapp.com/records/[ID]
-         {
-          :text (format "Found %d records in the Ads.txt file for '%s'" (count records) domain)
-          :attachments [
-                        {:text (str "```" (table [:order_id :exchange_domain :seller_account_id :account_type :tag_id] records) "```") :mrkdwn_in ["text"]}
-                        {:text (:url (db/get-domain-by-id id))}
-                        {:text (format "https://ads-txt.herokuapp.com/records/%d" (:id id))}
-                        ]
-          }
+         (json/write-str (build-slack-json domain id records))
          )
         )
       (response/ok (format "No Ads.txt file data found for '%s'" domain)))

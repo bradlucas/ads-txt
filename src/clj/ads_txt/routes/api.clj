@@ -62,11 +62,13 @@
     ))
   
 
-(defn build-slack-json [domain id records]
+(defn build-slack-json [domain id labels records]
   {
-   :text (format "Found %d records in the Ads.txt file for '%s'" (count records) domain)
+   ;; :text (format "Found %d records in the Ads.txt file for '%s'" (count records) domain)
+   :mrkdwn true
+   :text (format "```\n%s\n```\n" (table labels records))
    :attachments [
-                 {:text (markdown-table [:exchange_domain :seller_account_id :account_type :tag_id] records) :mrkdwn_in ["text"]}
+                 ;; {:text (format "```\n%s\n```\n" (table labels records)) :mrkdwn_in ["text"]}
                  {:text (format "File: %s\n" (:url (db/get-domain-by-id id)))}
                  {:text (format "More: https://ads-txt.herokuapp.com/records/%d" (:id id))}
                  ]
@@ -81,7 +83,8 @@
   (let [domain (:text params)]
     (println domain)
     (if-let [id (c/crawl-domain! domain)]
-      (let [records (db/get-records-for-domain-id id)]
+      (let [records (db/get-records-for-domain-id id)
+            labels [:exchange_domain :seller_account_id :account_type :tag_id]]
         (println records)
         (println (table [:order_id :exchange_domain :seller_account_id :account_type :tag_id] records))
          ;; Put records in a table
@@ -89,7 +92,7 @@
          ;; (:url (db/get-domain-by-id id))
          ;; Link to Ads-txt output
          ;; https://ads-txt.herokuapp.com/records/[ID]
-        (response/ok (build-slack-json domain id records))
+        (response/ok (build-slack-json domain id labels records))
         )
       (response/ok (format "No Ads.txt file data found for '%s'" domain)))
     ))

@@ -54,21 +54,22 @@
   )
 
   
-(defn slack-command [{:keys [params]}]
+(defn slack-command [{:keys [params] :as request}]
+  (println (keys request))
+  (println (:content-type request))
   ;; todo split command-line into domains, trim command as well
   (let [domain (:text params)]
+    (println domain)
     (if-let [id (c/crawl-domain! domain)]
       (let [records (db/get-records-for-domain-id id)]
-        ;; (println records)
-        ;; (println (table [:order_id :exchange_domain :seller_account_id :account_type :tag_id] records))
-        (response/ok 
+        (println records)
+        (println (table [:order_id :exchange_domain :seller_account_id :account_type :tag_id] records))
          ;; Put records in a table
          ;; Link to Ads.txt file
          ;; (:url (db/get-domain-by-id id))
          ;; Link to Ads-txt output
          ;; https://ads-txt.herokuapp.com/records/[ID]
-         (json/write-str (build-slack-json domain id records))
-         )
+        (response/ok (build-slack-json domain id records))
         )
       (response/ok (format "No Ads.txt file data found for '%s'" domain)))
     ))
@@ -88,5 +89,6 @@
 
 
   (POST "/api/slack/domain" request (slack-command request))
+  (POST "/api/slack/test" request (slack-command {:params {:text "ft.com"}}))
   
   )

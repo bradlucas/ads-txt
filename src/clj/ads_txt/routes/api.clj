@@ -65,9 +65,10 @@
 (defn build-slack-json [domain id labels records]
   {
    :mrkdwn true
-   :text (format "Found %d records in the Ads.txt file for '%s'" (count records) domain)
+   :text (str (format "Found %d records in the Ads.txt file for '%s'\n" (count records) domain)
+              (format "```\n%s\n```\n" (table labels records)))
    :attachments [
-                 {:text (format "```\n%s\n```\n" (table labels records)) :mrkdwn_in ["text"]}
+
                  {:text (format "<https://ads-txt.herokuapp.com/download/records/%d|Download>" (:id id))}
                  {:text (format "<%s|Ads.txt file>" (:url (db/get-domain-by-id id)))}
                  {:text (format "<%s|More information>" "https://ads-txt.herokuapp.com/")}

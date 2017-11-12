@@ -86,7 +86,7 @@
       (let [records (db/get-records-for-domain-id id)
             labels [:order_id :exchange_domain :seller_account_id :account_type :tag_id]]
         (println records)
-        (println (table [:order_id :exchange_domain :seller_account_id :account_type :tag_id] records))
+        (println (table [:order_id :name :exchange_domain :seller_account_id :account_type :tag_id] records))
          ;; Put records in a table
          ;; Link to Ads.txt file
          ;; (:url (db/get-domain-by-id id))

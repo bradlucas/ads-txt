@@ -69,8 +69,8 @@
    :text (format "```\n%s\n```\n" (table labels records))
    :attachments [
                  ;; {:text (format "```\n%s\n```\n" (table labels records)) :mrkdwn_in ["text"]}
-                 {:text (format "Download: https://ads-txt.herokuapp.com/download/records/%d" (:id id))}
-                 {:text (format "Ads.txt File: %s\n" (:url (db/get-domain-by-id id)))}
+                 {:text (format "<https://ads-txt.herokuapp.com/download/records/%d|Download>" (:id id))}
+                 {:text (format "<%s|Ads.txt File>" (:url (db/get-domain-by-id id)))}
                  ]
    }
   )

@@ -69,8 +69,8 @@
    :text (format "```\n%s\n```\n" (table labels records))
    :attachments [
                  ;; {:text (format "```\n%s\n```\n" (table labels records)) :mrkdwn_in ["text"]}
-                 {:text (format "File: %s\n" (:url (db/get-domain-by-id id)))}
-                 {:text (format "More: https://ads-txt.herokuapp.com/records/%d" (:id id))}
+                 {:text (format "Download: https://ads-txt.herokuapp.com/download/records/%d" (:id id))}
+                 {:text (format "Ads.txt File: %s\n" (:url (db/get-domain-by-id id)))}
                  ]
    }
   )
@@ -84,7 +84,7 @@
     (println domain)
     (if-let [id (c/crawl-domain! domain)]
       (let [records (db/get-records-for-domain-id id)
-            labels [:exchange_domain :seller_account_id :account_type :tag_id]]
+            labels [:order_id :exchange_domain :seller_account_id :account_type :tag_id]]
         (println records)
         (println (table [:order_id :exchange_domain :seller_account_id :account_type :tag_id] records))
          ;; Put records in a table

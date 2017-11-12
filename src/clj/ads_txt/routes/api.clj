@@ -84,7 +84,13 @@
     (println domain)
     (if-let [id (c/crawl-domain! domain)]
       (let [records (db/get-records-for-domain-id id)
-            labels [:order_id :name :exchange_domain :seller_account_id :account_type :tag_id]]
+            ;; labels [:order_id :name :exchange_domain :seller_account_id :account_type :tag_id]]
+            labels [{:name :order_id  :title "Num"}
+                    {:name :name :title "Domain"}
+                    {:name :exchange_domain :title "Exchange Domain"}
+                    {:name :seller_account_id :title "Seller Account ID"}
+                    {:name :account_type :title "Account Type"}
+                    {:name :tag_id :title "Tag ID"}]]
         (println records)
         (println (table labels records))
          ;; Put records in a table

@@ -71,6 +71,7 @@
                  ;; {:text (format "```\n%s\n```\n" (table labels records)) :mrkdwn_in ["text"]}
                  {:text (format "<https://ads-txt.herokuapp.com/download/records/%d|Download Data>" (:id id))}
                  {:text (format "<%s|View Ads.txt File>" (:url (db/get-domain-by-id id)))}
+                 {:text (format "<%s|Visit Ads-txt Site>" "https://ads-txt.herokuapp.com/")}
                  ]
    }
   )

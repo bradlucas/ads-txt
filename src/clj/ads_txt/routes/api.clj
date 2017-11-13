@@ -91,7 +91,8 @@
   (println (keys request))
   (println (:content-type request))
   ;; todo split command-line into domains, trim command as well
-  (let [domain (:text params)]
+  (let [cmds (clojure.string/split (clojure.string/trim (:text params)) #"\s+")
+        domain (first cmds)]
     (println domain)
     (let [id (c/crawl-domain! domain)]
       (let [records (db/get-records-for-domain-id id)
@@ -112,6 +113,21 @@
             ;; https://ads-txt.herokuapp.com/records/[ID]
             (response/ok (build-slack-json domain id labels records)))
           (response/ok (build-slack-json-no-records domain id)))))))
+
+(defn slack-command-test [{:keys [params] :as request}]
+  (let [cmds (clojure.string/split (clojure.string/trim (:text params)) #"\s+")]
+    (doseq [cmd cmds]
+      (println (format "%s" cmd)))
+    (response/ok
+     {
+      :mrkwn true
+      :text (format "Command is '%s" cmds)
+      }
+     )
+    )
+  )
+
+  
                                                 
 (defroutes api-routes
   (GET "/api/domains" [] (domains))
@@ -128,6 +144,6 @@
 
 
   (POST "/api/slack/domain" request (slack-command request))
-  (POST "/api/slack/test" request (slack-command {:params {:text "ft.com"}}))
+  (POST "/api/slack/test" request (slack-command-test request))
   
   )

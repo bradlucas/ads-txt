@@ -16,8 +16,8 @@
     (with-out-str (csv/write-csv *out* data))))
 
 
-(defn download-domains-list-csv []
-  (let [data (db/get-domains)]
+(defn download-domains-list-csv [get-domain-fn]
+  (let [data (get-domain-fn)]
     {:status 200
      :headers {"Content-Type" "text/csv; charset=utf-8"
                "Content-Length"      (str (count data))
@@ -27,15 +27,22 @@
     ))
 
 
-(defn domains-page [{:keys [params]}]
-  (if (:csv params)
-    (download-domains-list-csv)
-    (layout/render
-     "domains.html"
-     (merge {:domains (db/get-domains)}
-            (select-keys params [:name :errors :message])))))
+(defn domains-page [{:keys [params]} get-domain-fn all-flag]
+  (layout/render
+   "domains.html"
+   (merge {:domains (get-domain-fn)}
+          {:download-url (if all-flag "all" "withdata")}
+          {:sub-header (if all-flag "Showing all domains" "Showing only domains with data")}
+          (select-keys params [:name :errors :message]))))
 
 
 (defroutes domains-routes
-  (GET "/domains" request (domains-page request))
-  (GET "/download/domains" request (download-domains-list-csv)))
+  ;; all domains
+  (GET "/domains" request (domains-page request db/get-domains true))
+  (GET "/domains/all" request (domains-page request db/get-domains true))
+  (GET "/download/domains" request (download-domains-list-csv db/get-domains))
+  (GET "/download/domains/all" request (download-domains-list-csv db/get-domains))
+
+  ;; domains with data
+  (GET "/domains/withdata" request (domains-page request db/get-domains-with-data false))
+  (GET "/download/domains/withdata" request (download-domains-list-csv db/get-domains-with-data)))

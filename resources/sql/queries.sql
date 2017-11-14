@@ -16,13 +16,19 @@ VALUES(:domain_id, :exchange_domain, :seller_account_id, :account_type, :tag_id,
 -- SELECT * from domains ORDER BY name ASC;
 select d.id, d.name, d.createdate, d.crawldate, count(r.domain_id) as count, d.url from domains d left join records r on d.id=r.domain_id group by d.id, d.name order by d.name ASC;
 
+
+-- :name get-domains-with-data :? :*
+-- :doc selects all available domains
+-- SELECT * from domains ORDER BY name ASC;
+select d.id, d.name, d.createdate, d.crawldate, count(r.domain_id) as count, d.url from domains d right join records r on d.id=r.domain_id group by d.id, d.name order by d.name ASC;
+
 -- :name get-domain-id :? :1
 -- :doc select id from domains where name
 select d.id from domains d where d.name = :name
 
 -- :name get-records-for-domain :? :*
 -- :doc selects all available records for a specific domain by name
-select d.name, r.* from domains d, records r where d.id=r.domain_id and d.name = :name order by d.name;
+select d.name, r.* from domains d, records r where d.id=r.domain_id and d.name = :name order by r.order_id asc;
 
 -- :name get-records :? :*
 -- :doc selects all available records
@@ -35,6 +41,11 @@ select d.name from domains d where d.id = :id
 -- :name get-domains-count :? :1
 -- :doc returns number of domains
 SELECT COUNT(*) FROM domains
+
+
+-- :name get-domains-count-with-data :? :1
+-- :doc returns number of domains which have records
+select count(*) from domains d where d.id in (select d.id from domains d right join records r on d.id=r.domain_id group by d.id, d.name order by d.name ASC);
 
 -- :name get-records-count :? :1
 -- :doc returns number of records
@@ -55,11 +66,11 @@ select d.* from domains d where d.name=:name
 
 -- :name get-records-for-domain-id :? :*
 -- :doc selects all available records for a specific domain by id
-select d.name, r.* from domains d, records r where d.id=r.domain_id and d.id = :id order by d.name;
+select d.name, r.* from domains d, records r where d.id=r.domain_id and d.id = :id order by r.order_id asc;
 
 -- :name get-records-for-domain-name :? :*
 -- :doc selects all available records for a specific domain by name
-select d.name, r.* from domains d, records r where d.id=r.domain_id and d.name = :name order by d.name;
+select d.name, r.* from domains d, records r where d.id=r.domain_id and d.name = :name order by r.order_id asc;
 
 
 -- :name check :? :1

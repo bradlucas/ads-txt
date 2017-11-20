@@ -49,7 +49,7 @@
           ;; if we've already crawled this domain, delete previous records
           (if-let [id (db/get-domain-id {:name hostname})]
             (db/delete-domain-records id)
-            (db/save-domain! params))
+            (db/save-domain! {:name hostname}))
           (catch java.lang.Exception e
             ;; ignore duplicate entries
             ))

@@ -86,7 +86,11 @@
   )
 
 (defn crawl-new-domains []
-  ;; domains with no crawldate
+  (println "crawl-new-domains")
+  (mount/start #'ads-txt.config/env)
+  (mount/start #'ads-txt.db.core/*db*)
+  (c/crawl-new-domains)
+  (mount/stop #'ads-txt.db.core/*db*)
   )
 
 (defn process-cmdline-args [args]
@@ -140,3 +144,8 @@
           (crawl-domain domain)
           ;; else process arguments
           (process-cmdline-args args))))))
+
+
+(defn init []
+  (mount/start #'ads-txt.config/env)
+  (mount/start #'ads-txt.db.core/*db*))

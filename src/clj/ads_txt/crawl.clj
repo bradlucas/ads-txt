@@ -103,3 +103,16 @@
     (doseq [domain domains]
       (save-domain! {:params domain})  
       (crawl-domain-save (:name domain)))))
+
+(defn crawl-new-domains []
+  ;; crawl domains without a crawldate
+  (let [domains (db/get-domains-null-crawldate)]
+    (doseq [domain domains]
+      (save-domain! {:params domain})
+      (try 
+        (crawl-domain-save (:name domain))
+        (catch Exception e
+          (println (fornat "Exception crawling %s" domain))
+          )))))
+
+

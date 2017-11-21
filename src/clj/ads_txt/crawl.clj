@@ -48,13 +48,21 @@
         (try
           ;; if we've already crawled this domain, delete previous records
           (if-let [id (db/get-domain-id {:name hostname})]
-            (db/delete-domain-records id)
+            (db/delete-domain-records id)   ;; TODO Probably should null the crawldate as well
             (db/save-domain! {:name hostname}))
           (catch java.lang.Exception e
             ;; ignore duplicate entries
             ))
         hostname)
         nil)))
+
+(defn save-new-domain! [domain]
+  (let [hostname (hostname domain)]
+    (if (st/valid? {:name hostname} name-schema)
+      (if-not (db/get-domain-id {:name hostname})
+        (do
+          (println (format "save-new-domain! %s" hostname))
+          (db/save-domain! {:name hostname}))))))
 
 
 (defn crawl-domain-save [domain-name]

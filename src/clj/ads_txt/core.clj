@@ -15,7 +15,10 @@
 (def cli-options
   [["-p" "--port PORT" "Port number"
     :parse-fn #(Integer/parseInt %)]
-   ["-t" "--targets FILE" "List of domains to crawl ads.txt files from"]])
+   ["-t" "--targets FILE" "List of domains to crawl ads.txt files from"]
+   ["-d" "--domains FILE" "List of domains to add to the domains table to be crawled later"]
+   ["-c" "--crawl DOMAIN" "Crawl a single domain"]
+   ])
 
 (mount/defstate ^{:on-reload :noop}
                 http-server
@@ -63,6 +66,29 @@
     )
   (stop-app))
 
+(defn load-domains [domains-list]
+  (println domains-list)
+  (mount/start #'ads-txt.config/env)
+  (mount/start #'ads-txt.db.core/*db*)
+  (with-open [rdr (reader domains-list)]
+    (doseq [line (line-seq rdr)]
+      (let [domain (clojure.string/trim line)]
+        (c/save-new-domain! domain)
+        )))
+  (mount/stop #'ads-txt.db.core/*db*))
+
+(defn crawl-domain [domain]
+  (println (format "crawl-domain %s" domain))
+  (mount/start #'ads-txt.config/env)
+  (mount/start #'ads-txt.db.core/*db*)
+  (c/crawl-domain! domain)
+  (mount/stop #'ads-txt.db.core/*db*)
+  )
+
+(defn crawl-new-domains []
+  ;; domains with no crawldate
+  )
+
 (defn process-cmdline-args [args]
   (cond
     (some #{"init"} args)
@@ -90,6 +116,13 @@
       (c/crawl-all-domains)
       (mount/stop #'ads-txt.db.core/*db*)
       (System/exit 0))
+    (some #{"crawlnew"} args)
+    (do
+      (mount/start #'ads-txt.config/env)
+      (mount/start #'ads-txt.db.core/*db*)
+      (crawl-new-domains)
+      (mount/stop #'ads-txt.db.core/*db*)
+      (System/exit 0))
     :else
     (start-app args))
   )
@@ -101,4 +134,9 @@
     ;; (println (:arguments opts))
     (if-let [targets-list (:targets (:options opts))]
       (crawl-targets targets-list)
-      (process-cmdline-args args))))
+      (if-let [domains-list (:domains (:options opts))]
+        (load-domains domains-list)
+        (if-let [domain (:crawl (:options opts))]
+          (crawl-domain domain)
+          ;; else process arguments
+          (process-cmdline-args args))))))

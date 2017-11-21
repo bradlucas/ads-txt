@@ -55,16 +55,15 @@
 
 
 (defn crawl-targets [targets-list]
-  (start-app nil)
+  (mount/start #'ads-txt.config/env)
+  (mount/start #'ads-txt.db.core/*db*)
   (with-open [rdr (reader targets-list)]
     (doseq [line (line-seq rdr)]
       ;; (h/process-domain! {:params {:name (clojure.string/trim line)}})
       ;;      {:params {:name "wordpress.com"}}
       (let [domain (clojure.string/trim line)]
-        (c/crawl-domain! domain)
-        ))
-    )
-  (stop-app))
+        (c/crawl-domain! domain))))
+  (mount/stop #'ads-txt.db.core/*db*))
 
 (defn load-domains [domains-list]
   (println domains-list)
@@ -73,8 +72,7 @@
   (with-open [rdr (reader domains-list)]
     (doseq [line (line-seq rdr)]
       (let [domain (clojure.string/trim line)]
-        (c/save-new-domain! domain)
-        )))
+        (c/save-new-domain! domain))))
   (mount/stop #'ads-txt.db.core/*db*))
 
 (defn crawl-domain [domain]
@@ -82,16 +80,14 @@
   (mount/start #'ads-txt.config/env)
   (mount/start #'ads-txt.db.core/*db*)
   (c/crawl-domain! domain)
-  (mount/stop #'ads-txt.db.core/*db*)
-  )
+  (mount/stop #'ads-txt.db.core/*db*))
 
 (defn crawl-new-domains []
   (println "crawl-new-domains")
   (mount/start #'ads-txt.config/env)
   (mount/start #'ads-txt.db.core/*db*)
   (c/crawl-new-domains)
-  (mount/stop #'ads-txt.db.core/*db*)
-  )
+  (mount/stop #'ads-txt.db.core/*db*))
 
 (defn process-cmdline-args [args]
   (cond
@@ -128,8 +124,7 @@
       (mount/stop #'ads-txt.db.core/*db*)
       (System/exit 0))
     :else
-    (start-app args))
-  )
+    (start-app args)))
 
 (defn -main [& args]
   ;; parse args

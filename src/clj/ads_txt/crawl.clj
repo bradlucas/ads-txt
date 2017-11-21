@@ -112,7 +112,7 @@
       (try 
         (crawl-domain-save (:name domain))
         (catch Exception e
-          (println (fornat "Exception crawling %s" domain))
+          (println (format "Exception crawling %s" domain))
           )))))
 
 

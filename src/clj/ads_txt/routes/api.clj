@@ -99,7 +99,7 @@
   (println (:content-type request))
   ;; todo split command-line into domains, trim command as well
   (let [cmds (clojure.string/split (clojure.string/trim (:text params)) #"\s+")
-        domain (first cmds)]
+        domain (c/hostname (first cmds))]
     (println domain)
     (let [id (c/crawl-domain! domain)]
       (let [records (db/get-records-for-domain-id id)

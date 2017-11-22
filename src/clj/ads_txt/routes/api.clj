@@ -92,6 +92,9 @@
   {
    :mrkdwn true
    :text (format "The submitted domain '%s' does not appear to be valid." domain)
+   :attachments [
+                 {:text (format "<%s|More information>" "https://ads-txt.herokuapp.com/")}
+                 ]
    }
   )
 

@@ -110,7 +110,7 @@
 
 
 ;; Update valid-domain for all domains
-(defn update-domains-valid-domain-flag []
+(defn check-domains-for-valid-domains []
   (let [domains (db/get-domains)]
     (doseq [domain domains]
       (let [name (:name domain)]
@@ -119,3 +119,30 @@
           (println (format "Invalid : '%s'" name))
         )))))
         
+(defn check-records-for-valid-domains []
+  (let [records (db/get-records)]
+    (doseq [record records]
+      (let [name (:name record)]
+        (if (valid-domain name)
+          (println (format "Valid   : '%s'" name))
+          (println (format "Invalid : '%s'" name))
+        )))))
+
+
+(defn report-domain-errors []
+  (println "--------------------------------------------------")
+  (println "Invalid domains in the Domains table")
+  (println "--------------------------------------------------")
+  (let [domains (db/get-domains)]
+    (doseq [domain domains]
+      (if (not (valid-domain (:name domain)))
+        (println (format "%d,%s" (:id domain) (:name domain))))))
+  (println "--------------------------------------------------")
+  (println "--------------------------------------------------")
+  (println "Invalid domains in the Records Table")
+  (println "--------------------------------------------------")
+  (let [records (db/get-records)]
+    (doseq [record records]
+      (if (not (valid-domain (:exchange_domain record)))
+        (println (format "%s,%s,%s,%s" (:name record) (:exchange_domain record) (:seller_account_id record) (:tag_id record))))))
+  (println "--------------------------------------------------"))

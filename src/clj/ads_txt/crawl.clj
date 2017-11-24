@@ -61,7 +61,7 @@
         records (:records (c/get-data domain-name))
         data (filter (fn [r] (and (not-empty (:account-id r)) (not-empty (:account-id r)))) records)]
     (println (format "Crawling %s" domain-name))
-    (db/save-domain-url (assoc id  :url (c/build-url domain-name)))    ;; TODO this should be done more clearly elsewhere
+    (db/update-domain-url (assoc id  :url (c/build-url domain-name)))    ;; TODO this should be done more clearly elsewhere
     (doseq [[idx d] (map-indexed (fn [i v] [i v]) data)]
       (try
         (db/save-record! {:domain_id (:id id)

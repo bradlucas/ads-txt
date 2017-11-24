@@ -94,7 +94,7 @@ delete from records where domain_id = :id
 update domains set crawldate=now() where id = :id
 
 
--- :name save-domain-url :! :1
+-- :name update-domain-url :! :1
 update domains set url=:url where id=:id
 
 -- :name get-domains-null-crawldate :? :*

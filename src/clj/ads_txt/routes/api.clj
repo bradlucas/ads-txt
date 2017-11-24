@@ -33,12 +33,8 @@
       (response/not-found))))
 
 (defn post-domain [name]
-  (try
-    (db/save-domain! {:name name})
-    (catch java.lang.Exception e
-      ;; ignore duplicate errors
-      ))
-  (c/crawl-domain-save name)
+  (if (c/save-domain! {:params {:name name}})
+    (c/crawl-domain-save name))
   (response/ok))
 
 

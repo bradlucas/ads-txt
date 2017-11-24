@@ -3,6 +3,7 @@
             [doric.core :refer [table]]
             [ads-txt.db.core :as db]
             [ads-txt.crawl :as c]
+            [ads-txt-crawler.httpkit :as h]
             [clojure.data.json :as json]
             [ring.util.response :refer [response content-type]]
             [ring.util.http-response :as response]))
@@ -86,33 +87,51 @@
                  ]
    }
   )
-  
+
+(defn build-slack-invalid-domain [domain]
+  {
+   :mrkdwn true
+   :text (format "The submitted domain '%s' does not appear to be valid." domain)
+   :attachments [
+                 {:text (format "<%s|More information>" "https://ads-txt.herokuapp.com/")}
+                 ]
+   }
+  )
+
+(defn valid-domain [domain]
+  ;; build-url
+  (let [url (format "http://%s" domain)
+        {:keys [status headers body error] :as resp} (h/get-url url)]
+    (= 200 status)))
+
 (defn slack-command [{:keys [params] :as request}]
   (println (keys request))
   (println (:content-type request))
   ;; todo split command-line into domains, trim command as well
   (let [cmds (clojure.string/split (clojure.string/trim (:text params)) #"\s+")
-        domain (first cmds)]
+        domain (c/hostname (first cmds))]
     (println domain)
-    (let [id (c/crawl-domain! domain)]
-      (let [records (db/get-records-for-domain-id id)
-            labels [{:name :order_id  :title "Num"}
-                    {:name :name :title "Domain"}
-                    {:name :exchange_domain :title "Exchange Domain"}
-                    {:name :seller_account_id :title "Seller Account ID"}
-                    {:name :account_type :title "Account Type"}
-                    {:name :tag_id :title "Tag ID"}]]
-        (if (not-empty records)
-          (do
-            (println records)
-            (println (table labels records))
-            ;; Put records in a table
-            ;; Link to Ads.txt file
-            ;; (:url (db/get-domain-by-id id))
-            ;; Link to Ads-txt output
-            ;; https://ads-txt.herokuapp.com/records/[ID]
-            (response/ok (build-slack-json domain id labels records)))
-          (response/ok (build-slack-json-no-records domain id)))))))
+    (if (valid-domain domain)
+      (let [id (c/crawl-domain! domain)]
+        (let [records (db/get-records-for-domain-id id)
+              labels [{:name :order_id  :title "Num"}
+                      {:name :name :title "Domain"}
+                      {:name :exchange_domain :title "Exchange Domain"}
+                      {:name :seller_account_id :title "Seller Account ID"}
+                      {:name :account_type :title "Account Type"}
+                      {:name :tag_id :title "Tag ID"}]]
+          (if (not-empty records)
+            (do
+              (println records)
+              (println (table labels records))
+              ;; Put records in a table
+              ;; Link to Ads.txt file
+              ;; (:url (db/get-domain-by-id id))
+              ;; Link to Ads-txt output
+              ;; https://ads-txt.herokuapp.com/records/[ID]
+              (response/ok (build-slack-json domain id labels records)))
+            (response/ok (build-slack-json-no-records domain id)))))
+      (response/ok (build-slack-invalid-domain domain)))))
 
 (defn slack-command-test [{:keys [params] :as request}]
   (let [cmds (clojure.string/split (clojure.string/trim (:text params)) #"\s+")]

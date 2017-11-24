@@ -26,22 +26,6 @@
     (d/strip-www hostname)))
 
 
-;; (defn save-domain! [{:keys [params]}]
-;;   (if-let [hostname (hostname (:name params))]
-;;     (let [params (assoc params :name hostname)]
-;;       (if-let [errors (validate-name params)]
-;;         ;; TODO move this back into hme.clj or similar
-;;         (-> (response/found "/domains")
-;;             (assoc :flash (assoc params :errors errors)))
-;;         (do
-;;           (try
-;;             (db/save-domain! params)
-;;             (catch java.lang.Exception e
-;;               ;; ignore duplicate entries
-;;               ))
-;;           hostname)))))
-
-
 (defn valid-domain [domain]
   ;; build-url
   (let [url (format "http://%s" domain)

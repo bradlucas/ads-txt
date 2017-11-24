@@ -2,6 +2,7 @@
   (:require [ads-txt-crawler.crawl :as c]
             [ads-txt-crawler.domains :as d]
             [ads-txt.db.core :as db]
+            [ads-txt-crawler.httpkit :as h]
             [clojurewerkz.urly.core :refer [url-like as-map]]
             [ring.util.http-response :as response]
             [struct.core :as st]))
@@ -40,6 +41,12 @@
 ;;               ))
 ;;           hostname)))))
 
+
+(defn valid-domain [domain]
+  ;; build-url
+  (let [url (format "http://%s" domain)
+        {:keys [status headers body error] :as resp} (h/get-url url)]
+    (= 200 status)))
 
 (defn save-domain! [{:keys [params]}]
   (let [hostname (hostname (:name params))]
@@ -116,3 +123,15 @@
           )))))
 
 
+
+
+;; Update valid-domain for all domains
+(defn update-domains-valid-domain-flag []
+  (let [domains (db/get-domains)]
+    (doseq [domain domains]
+      (let [name (:name domain)]
+        (if (valid-domain name)
+          (println (format "Valid   : '%s'" name))
+          (println (format "Invalid : '%s'" name))
+        )))))
+        

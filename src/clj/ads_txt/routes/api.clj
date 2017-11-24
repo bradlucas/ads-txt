@@ -3,7 +3,6 @@
             [doric.core :refer [table]]
             [ads-txt.db.core :as db]
             [ads-txt.crawl :as c]
-            [ads-txt-crawler.httpkit :as h]
             [clojure.data.json :as json]
             [ring.util.response :refer [response content-type]]
             [ring.util.http-response :as response]))
@@ -98,12 +97,6 @@
    }
   )
 
-(defn valid-domain [domain]
-  ;; build-url
-  (let [url (format "http://%s" domain)
-        {:keys [status headers body error] :as resp} (h/get-url url)]
-    (= 200 status)))
-
 (defn slack-command [{:keys [params] :as request}]
   (println (keys request))
   (println (:content-type request))
@@ -111,7 +104,7 @@
   (let [cmds (clojure.string/split (clojure.string/trim (:text params)) #"\s+")
         domain (c/hostname (first cmds))]
     (println domain)
-    (if (valid-domain domain)
+    (if (c/valid-domain domain)
       (let [id (c/crawl-domain! domain)]
         (let [records (db/get-records-for-domain-id id)
               labels [{:name :order_id  :title "Num"}

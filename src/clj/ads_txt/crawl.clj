@@ -148,7 +148,7 @@
   (println "--------------------------------------------------"))
 
 
-(defn report-domain-non-200-status []
+(defn report-domains-status []
   (let [domains (db/get-domains)]
     (doseq [domain domains]
       (let [url (format "http://%s" (:name domain))
@@ -156,3 +156,14 @@
         (if (or (nil? status) (not (= 200 status)))
           (println (format "%s - %d" (:name domain) status)))))))
 
+
+(defn report-records-domains-status []
+  (let [records (db/get-records)]
+    (doseq [record records]
+      
+      (let [domain (:exchange_domain record)
+            url (format "http://%s" domain)
+            {:keys [status headers body error] :as resp} (h/get-url url)]
+        (if (or (nil? status) (not (= 200 status)))
+          (println (format "%d,%s,%s,%s,%s,%d" (:domain_id record) domain (:seller_account_id record) (:account_type record) (:tag_id record) status)))
+        ))))

@@ -123,12 +123,18 @@
       (crawl-new-domains)
       (mount/stop #'ads-txt.db.core/*db*)
       (System/exit 0))
-    (some #{"test"} args)
+    (some #{"report-domains"} args)
     (do
       (mount/start #'ads-txt.config/env)
       (mount/start #'ads-txt.db.core/*db*)
-      ;; (c/report-domain-errors)
-      (c/report-domain-non-200-status)
+      (c/report-domains-status)
+      (mount/stop #'ads-txt.db.core/*db*)
+      (System/exit 0))
+    (some #{"report-records"} args)
+    (do
+      (mount/start #'ads-txt.config/env)
+      (mount/start #'ads-txt.db.core/*db*)
+      (c/report-records-domains-status)
       (mount/stop #'ads-txt.db.core/*db*)
       (System/exit 0))
     :else

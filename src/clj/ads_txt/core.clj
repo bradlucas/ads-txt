@@ -128,7 +128,7 @@
       (mount/start #'ads-txt.config/env)
       (mount/start #'ads-txt.db.core/*db*)
       ;; (c/report-domain-errors)
-      (c/report-domain-status-values)
+      (c/report-domain-non-200-status)
       (mount/stop #'ads-txt.db.core/*db*)
       (System/exit 0))
     :else

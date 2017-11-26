@@ -146,3 +146,12 @@
       (if (not (valid-domain (:exchange_domain record)))
         (println (format "%s,%s,%s,%s" (:name record) (:exchange_domain record) (:seller_account_id record) (:tag_id record))))))
   (println "--------------------------------------------------"))
+
+
+(defn report-domain-status-values []
+  (let [domains (db/get-domains)]
+    (doseq [domain domains]
+      (let [url (format "http://%s" (:name domain))
+            {:keys [status headers body error] :as resp} (h/get-url url)]
+        (println (format "%s - %d" (:name domain) status))))))
+

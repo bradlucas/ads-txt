@@ -1,3 +1,7 @@
+# This project has moved to [github.com/bradlucas/adstxt](https://github.com/bradlucas/adstxt)
+
+***
+
 # ads-txt
 
 A site which uses `ads-txt-crawler` to retrieve and store Ads.txt file contents
